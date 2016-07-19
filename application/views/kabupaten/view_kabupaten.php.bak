@@ -1,0 +1,217 @@
+<?php
+$this->load->view('page/header');
+?>
+
+<div class="mainbar">
+    <div class="container">
+        <div style="margin-top:10px;" class="mainbox col-md-12">
+            <div class="panel panel-info" >
+                <div style="padding-top:20px" class="panel-body">
+            <div class="page-tables">
+                <div class="form-group col-lg-6">
+                    <label class="col-lg-3 control-label">Provinsi</label>
+                    <div class="col-lg-8">
+                        <select class="form-control" id="select_provinsi" name="">
+                            <option value="0">Semua</option>
+                            <?php
+                            foreach ($list_provinsi as $key => $prov) {
+                                echo '<option value="'.$prov['PROVINSI_ID'].'">'.$prov['PROVINSI_KODE'].' '.$prov['PROVINSI_NAMA'].'</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+            </div>
+                    <div class="page-tables">
+                        <div class="table-responsive" style="; min-height: 200px;overflow-x: auto">
+                            <table id="tabel_kabupaten" cellpadding="0" cellspacing="1" border="0" width="100%" style="white-space: nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode Kabupaten</th>
+                                        <th>Nama Kabupaten</th>
+                                        <th>Provinsi</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
+<div id="modal_edit" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="judulModal">Edit Kabupaten</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="log-lg-3 control-label">Provinsi</label>
+                        <div class="col-lg-5">
+                            <select class="form-control" id="select_provinsi_edit" name="">
+                                <?php
+                                foreach ($list_provinsi as $key => $prov) {
+                                    echo '<option value="'.$prov['PROVINSI_ID'].'">'.$prov['PROVINSI_KODE'].' '.$prov['PROVINSI_NAMA'].'</option>';
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="log-lg-3 control-label">Kode Kabupaten</label>
+                        <div class="col-lg-5">
+                            <input type="text" id="kode_kabupaten_edit" placeholder="Kode Kecamatan" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="log-lg-3 control-label">Nama Kabupaten</label>
+                        <div class="col-lg-5">
+                            <input type="text" id="nama_kabupaten_edit" placeholder="Nama Kecamatan" class="form-control"/>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <input type="hidden" id="id_kabupaten_edit" value='0'/>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="simpan_perubahan()" id="">Simpan</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal_hapus" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="judulModal">Hapus Kabupaten</h4>
+            </div>
+            <div class="modal-body">
+                <div id="div_hapus_keterangan"></div>
+            </div>
+            <input type="hidden" id="id_kabupaten_hapus" value='0'/>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="hapus()" id="">Simpan</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php
+$this->load->view('page/footer');
+?>
+
+<script>
+	var tabel_list_kabupaten=null;
+	var site_url = '<?= site_url()?>';
+    $(document).ready(function () {
+        init_kabupaten_datatable();
+    });
+    function init_kabupaten_datatable(){
+    	if (tabel_list_kabupaten != null) {
+            tabel_list_kabupaten.fnDestroy();
+        }
+        tabel_list_kabupaten = $('#tabel_kabupaten').dataTable({
+            "processing": true,
+            "serverSide": true,
+            order: [[0, "asc"]],
+            "columnDefs": [
+                {"orderable": false, "targets": 3},
+                {"searchable": false, "targets": 3}
+            ],
+            "ajax": {
+                'method': 'post',
+                'data': {
+                },
+                "url": site_url + "/kabupaten/get_list_kabupaten_datatable",
+                "dataSrc": function (json) {
+                    jsonData = json.data;
+                    return jsonData;
+                }
+            },
+            "createdRow": function (row, data, index) {
+                var id = data[0];
+                $('td', row).eq(0).html(index + 1);
+                var html = '<div class="btn-group">' +
+                        '<button class="btn btn-default btn-xs dropdown-toggle btn-info" data-toggle="dropdown">Aksi <span class="caret"></span></button>' +
+                        '<ul class="dropdown-menu">' +
+                        '<li><a href="<?= site_url()?>/kecamatan?id_kabupaten=' + id + '"><i class="fa fa-eye fa-fw"></i> Daftar Kecamatan</a></li>';
+                
+                html += '<li><a href="javascript:showEditDialog('+id+','+index+')"><i class="fa fa-refresh fa-fw"></i> Ubah</a></li>';
+                html += '<li><a href="javascript:showDeleteDialog(' + id + ','+index+')"><i class="fa fa-trash-o fa-fw"></i> Hapus</a></li>';
+                
+                html += '</ul>' +
+                        '</div>';
+                $('td', row).eq(4).html(html);
+                $(row).attr({'id': 'kabupaten_' + id});
+            }
+        });
+    }
+    function showEditDialog(id,index){
+        $('#modal_edit').modal('show');
+        $('#id_kabupaten_edit').val(id);
+        var data = tabel_list_kabupaten.fnGetData()[index];
+        console.log(data);
+        $('#kode_kabupaten_edit').val(data[1]);
+        $('#nama_kabupaten_edit').val(data[2]);
+    }
+    function showDeleteDialog(id,index){
+        var data = tabel_list_kabupaten.fnGetData()[index];
+        $('#div_hapus_keterangan').html('Anda akan menghapus <br/>Kabupaten '+data[2]);
+        $('#id_kabupaten_hapus').val(id);
+        $('#modal_hapus').modal('show');
+    }
+    function simpan_perubahan(){
+        $.ajax({
+            type: "post",
+            url: site_url + '/kabupaten/edit',
+            data: {
+                kode:$('#kode_kabupaten_edit').val(),
+                nama:$('#nama_kabupaten_edit').val(),
+                id:$('#id_kabupaten_edit').val()
+            },
+            success: function (data) {
+                if (data === 'ok') {
+                    $('#modal_edit').modal('hide');
+                    tabel_list_kabupaten.fnDraw();
+                } else {
+                    alert(data);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    }
+    function hapus(){
+        $.ajax({
+            type: "post",
+            url: site_url + '/kabupaten/hapus',
+            data: {
+                id:$('#id_kabupaten_hapus').val()
+            },
+            success: function (data) {
+                if (data === 'ok') {
+                    $('#modal_hapus').modal('hide');
+                    tabel_list_kabupaten.fnDraw();
+                } else {
+                    alert(data);
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+            }
+        });
+    }
+
+</script>
