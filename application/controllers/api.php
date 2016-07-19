@@ -351,7 +351,7 @@ class api extends CI_Controller
         }
     }
 
-    /*Get data harga from id pasar*/
+    /*Get data harga from id pasar & tanggal*/
     public function getHarga()
     {
         $tanggal = $this->input->post('tanggal');

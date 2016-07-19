@@ -196,10 +196,7 @@
         </li>
 
         <li class="has_sub ">
-            <a><i class="fa fa-table"></i>Data <span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
-            <ul>
-                <li><a href="">Produksi</a></li>
-            </ul>
+            <a><i class="fa fa-table"></i>Data Produksi<span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
             <ul>
                 <li><a href="<?= site_url() ?>/data/bahan_makanan"><i class="fa fa-table"></i> Bahan Makanan</a></li>
             </ul>
@@ -211,6 +208,20 @@
             </ul>
             <ul>
                 <li><a href="<?= site_url() ?>/data/viewdata/tanaman_perkebunan"><i class="fa fa-table"></i> Tanaman Perkebunan</a></li>
+            </ul>
+        </li>
+
+        <li class="has_sub ">
+            <a><i class="fa fa-table"></i>Data Konsumsi<span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
+            <ul>
+                <li><a href="<?= site_url() ?>/data/konsumsi"><i class="fa fa-table"></i> Data Konsumsi</a></li>
+            </ul>
+        </li>
+
+       <li class="has_sub ">
+            <a><i class="fa fa-table"></i>Data Harga Bahan Pokok<span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
+            <ul>
+                <li><a href="<?= site_url() ?>/data/harga_bahan_pokok"><i class="fa fa-table"></i> Data Harga Bahan Pokok</a></li>
             </ul>
         </li>
        
