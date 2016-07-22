@@ -353,8 +353,8 @@ class api extends CI_Controller
         }
     }
 
-    /*Get data harga from id pasar*/
-    public function getHarga()
+    /*Get data harga from id pasar & tanggal*/
+   /* public function getHarga()
     {
         $tanggal = $this->input->post('tanggal');
         $id_pasar = $this->input->post('id_pasar');
@@ -373,6 +373,53 @@ class api extends CI_Controller
             }
             echo json_encode($harga);
         }
+    }*/
+
+     /*Get data harga from api*/
+    public function getHarga()
+    {
+        $tanggal = $this->input->post('tanggal');
+        $id_pasar = $this->input->post('id_pasar');
+        $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($ch);
+        $res = json_decode($data,true);
+
+        $url2 = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
+        $ch2 = curl_init();
+        curl_setopt($ch2, CURLOPT_URL, $url2);
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, 1);
+        $data2 = curl_exec($ch2);
+        $res2 = json_decode($data2,true);
+        $komoditas = $res2['result'];
+
+        $kom = array();
+        foreach($komoditas as $row){
+            $id = $row['commodity_id'];
+            $kom[$id] = array(
+                'commodity_name' => $row['commodity_name'],
+                'commodity_unit' => $row['commodity_unit'],
+                'commodity_title' => $row['commodity_title']
+                ); 
+        }
+
+        $harga = array();
+        if($res['success']==1){
+            foreach($res['result'] as $row){
+                if($row['market_id'] == $id_pasar){
+                    $harga['getharga'] = $row['details'];
+                }
+            }
+            foreach ($harga['getharga'] as &$row) {
+                $id = $row['commodity_id'];
+                $row = array_merge($row,$kom[$id]);
+            }
+            echo json_encode($harga);
+        }
+
+
     }
 
 }
