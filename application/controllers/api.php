@@ -324,10 +324,11 @@ class api extends CI_Controller
         $data = curl_exec($ch);
         $res = json_decode($data,true);
         $pasar = array();
+        $pasar['getpasar'] = array();
         if($res['success'] == 1){
             foreach ($res['result'] as $row) {
                 if($row['kabkota_id'] == 6){ // id kabupaten banyuwangi = 6
-                    $pasar[] = array(
+                    $pasar['getpasar'][] = array(
                         'id' => $row['market_id'],
                         'nama' => $row['market_name']
                     );
@@ -345,9 +346,10 @@ class api extends CI_Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($ch);
-        $res = json_decode($data,true);
-        if($res['success'] == 1){
-            echo json_encode($res['result']);
+        $res = json_decode($data);
+        if($res->success == 1){
+            $hasil['getkomoditas'] = $res->result;
+            echo json_encode($hasil);
         }
     }
 
@@ -366,7 +368,7 @@ class api extends CI_Controller
         if($res['success']==1){
             foreach($res['result'] as $row){
                 if($row['market_id'] == $id_pasar){
-                    $harga = $row['details'];
+                    $harga['getharga'] = $row['details'];
                 }
             }
             echo json_encode($harga);
