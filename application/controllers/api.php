@@ -412,7 +412,7 @@ class api extends CI_Controller
                     $harga['getharga'] = $row['details'];
                 }
             }
-            foreach ($harga['getharga'] as &$row) {
+            foreach($harga['getharga'] as &$row) {
                 $id = $row['commodity_id'];
                 $row = array_merge($row,$kom[$id]);
             }

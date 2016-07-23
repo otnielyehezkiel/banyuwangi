@@ -13,10 +13,14 @@ $this->load->view('page/header');
                 <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/cobaupload/hasilupload" method="post" >
                     <div style="margin-bottom: 25px" class="input-group">
                         <select name="jenisdata" class="form-control" onchange="changelinkname()" id="jenisdata">
-                                <option value="bahan_makanan">Data Bahan Makanan</option>
-                                <option value="sayur_sayuran">Data Produksi Sayur - sayuran</option>
-                                <option value="buah_buahan">Data Produksi Buah-buahan</option>
-                                <option value="tanaman_perkebunan">Data Produksi Tanaman Perkebunan</option>
+                                <option value="1">Data Beras Padi Sawah</option>
+                                <option value="2">Data Beras Padi Ladang</option>
+                                <option value="3">Data Jagung</option>
+                                <option value="4">Data Produksi Tanaman Perkebunan</option>
+                                <option value="5">Data Produksi Tanaman Perkebunan</option>
+                                <option value="6">Data Produksi Tanaman Perkebunan</option>
+                                <option value="7">Data Produksi Tanaman Perkebunan</option>
+                                <option value="8">Data Produksi Tanaman Perkebunan</option>
                             </select>
                         
                     </div>
@@ -49,13 +53,14 @@ $this->load->view('page/header');
 $this->load->view('page/footer');
 ?>
 
-<script>
-    $(document).ready(function () {
-        $($('.has_sub')[0]).addClass('open');
-    });
-</script>
 
 <script>
+    function changelinkname()
+    {
+        var txt= $("#jenisdata option:selected").text();
+        document.getElementById("linkdownload").innerHTML="Download template "+txt;
+    }
+
     function gantilink() {
 
         var id=document.getElementById("jenisdata").value;
@@ -63,39 +68,42 @@ $this->load->view('page/footer');
         switch (id)
         {
             case '1':
-                window.location = "<?php echo base_url();?>/formatexcel/luaslahan.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/beras_padi_sawah.xls";
                 break;
             case '2':
-                window.location = "<?php echo base_url();?>/formatexcel/produksi_padi_sawah.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/beras_padi_ladang.xls";
                 break;
             case '3':
-                window.location = "<?php echo base_url();?>/formatexcel/produksi_padi_ladang.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/jagung.xls";
                 break;
             case '4':
-                window.location = "<?php echo base_url();?>/formatexcel/produksi_jagung.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/kedelai.xls";
                 break;
             case '5':
-                window.location = "<?php echo base_url();?>/formatexcel/produksi_ubikayu.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/ubi_kayu.xls";
                 break;
             case '6':
-                window.location = "<?php echo base_url();?>/formatexcel/luaslahan.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/ubi_jalar.xls";
                 break;
             case '7':
-                window.location = "<?php echo base_url();?>/formatexcel/produksi_kacang.xls";
+                window.location = "<?php echo base_url();?>/formatexcel/kacang_tanah.xls";
                 break;
-
+            case '8':
+                window.location = "<?php echo base_url();?>/formatexcel/kacang_hijau.xls";
+                break;    
         };
     }
 </script>
 <script>
-
     function chooseFile() {
         $('#pilihFile').trigger('click');
     }
+
     function submitForm() {
         $('#uploadForm').submit();
     }
-    function pilihFileChange() {
+
+   function pilihFileChange() {
         $('#divListFile').hide('fast');
         console.log('input file berubah');
         var inputFile = document.getElementById('pilihFile');
@@ -111,12 +119,14 @@ $this->load->view('page/footer');
         }
         $('#divListFile').show('slow');
     }
+
     $(document).ready(function () {
         $('#pilihFile').on('change', function () {
 
         });
         $($('.has_sub')[2]).addClass('open');
     });
+    
     function resetFormUpload1() {
         var inputButton = $('#pilihFile');
         var parent = inputButton.parent();
@@ -125,11 +135,5 @@ $this->load->view('page/footer');
         parent.append(isi);
         $('#tableListFile').parent().hide('fast');
         $('#buttonSubmit').hide('fast');
-    }
-
-    function changelinkname()
-    {
-        var txt= $("#jenisdata option:selected").text();
-        document.getElementById("linkdownload").innerHTML="Download template "+txt;
     }
 </script>
