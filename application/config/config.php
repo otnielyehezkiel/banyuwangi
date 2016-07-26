@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/banyuwangi';
+$config['base_url']	= 'http://198.71.80.189:8081';
 
 /*
 |--------------------------------------------------------------------------
