@@ -20,6 +20,8 @@ class Cobaupload extends admin_controller {
         ini_set('memory_limit', '-1');
         ini_set('max_execution_time', 0);
         set_time_limit(0);
+
+        
         $this->load->library(array('myuploadlib', 'excel'));
         $this->load->model(array('InitialUploadModel'));
         $myUpload = new MyUploadLib();

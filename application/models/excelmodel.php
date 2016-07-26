@@ -7,7 +7,7 @@ if (!defined('BASEPATH'))
 class excelmodel extends CI_MODEL
 {
     public function getExcelData($filepath)
-    {
+    {   
         $this->load->library('excel');
         //read file from path
         $objPHPExcel = PHPExcel_IOFactory::load($filepath);
