@@ -405,21 +405,46 @@ class api extends CI_Controller
                 ); 
         }
 
+        $prev_date = date('Y-m-d', strtotime($tanggal .' -1 day'));
+
+        $url3 = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$prev_date;
+        $ch3 = curl_init();
+        curl_setopt($ch3, CURLOPT_URL, $url3);
+        curl_setopt($ch3, CURLOPT_RETURNTRANSFER, 1);
+        $data3 = curl_exec($ch3);
+        $res3 = json_decode($data3,true);
+
         $harga = array();
-        if($res['success']==1){
+        $harga['getharga'] = array();
+        $today = array();
+        $yesterday = array();
+
+        if($res['success']==1 && $res3['success']==1){
             foreach($res['result'] as $row){
                 if($row['market_id'] == $id_pasar){
-                    $harga['getharga'] = $row['details'];
+                    $today['today'] = $row['details'];
+                    $harga['getharga'] = $today;
                 }
             }
-            foreach($harga['getharga'] as &$row) {
+            foreach($harga['getharga']['today'] as &$row) {
                 $id = $row['commodity_id'];
                 $row = array_merge($row,$kom[$id]);
+            }
+            
+            foreach($res3['result'] as $row1){
+                if($row1['market_id'] == $id_pasar){
+                    $harga['getharga']['yesterday'] = $row1['details'] ;
+                }
+            } 
+            foreach($harga['getharga']['yesterday'] as &$row2) {
+                $id = $row2['commodity_id'];
+                $row2 = array_merge($row2,$kom[$id]);
             }
             echo json_encode($harga);
         }
 
 
     }
+
 
 }
