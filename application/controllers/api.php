@@ -354,6 +354,7 @@ class api extends CI_Controller
             print $log;
             return;
         }
+        
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -366,27 +367,6 @@ class api extends CI_Controller
         }
     }
 
-    /*Get data harga from id pasar & tanggal*/
-   /* public function getHarga()
-    {
-        $tanggal = $this->input->post('tanggal');
-        $id_pasar = $this->input->post('id_pasar');
-        $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec($ch);
-        $res = json_decode($data,true);
-        $harga = array();
-        if($res['success']==1){
-            foreach($res['result'] as $row){
-                if($row['market_id'] == $id_pasar){
-                    $harga['getharga'] = $row['details'];
-                }
-            }
-            echo json_encode($harga);
-        }
-    }*/
 
      /*Get data harga from api*/
     public function getHarga()
@@ -464,8 +444,6 @@ class api extends CI_Controller
             }
             echo json_encode($harga);
         }
-
-
     }
 
 
