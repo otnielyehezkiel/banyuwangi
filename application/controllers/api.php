@@ -206,20 +206,21 @@ class api extends CI_Controller
 
     }
 
+    /* insert All Data */
     public function getalldata()
     {
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
 
-        if($log!=1)
+        if($log != 1)
         {
             print $log;
             return;
         }
 
-        $table=array('bahan_makanan','buah_buahan','sayur_sayuran','tanaman_perkebunan');
-        $data=array();
+        $table = array('bahan_makanan','buah_buahan','sayur_sayuran','tanaman_perkebunan');
+        $data = array();
         foreach ($table as $val)
         {
             $query=$this->db->get($val);
@@ -228,6 +229,45 @@ class api extends CI_Controller
         }
 
         print json_encode($data);
+    }
+
+    public function getTahunProduksi(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+
+        $tanaman = array(
+                'Padi Sawah',
+                'Padi Ladang',
+                'Jagung',
+                'Kedelai',
+                'Ubi Kayu',
+                'Ubi Jalar',
+                'Kacang Tanah',
+                'Kacang Hijau',
+            );
+
+        $hasil = array();
+        foreach ($tanaman as $row) {
+            $query = $this->db->query("
+                    SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun 
+                    FROM bahan_makanan
+                    where jenis_tanaman = '".$row. "'
+                    GROUP BY tahun
+                ");
+            $hasil[$row] = $query->result();
+        }
+
+        $res['gettahunproduksi'] = $hasil;
+
+        echo json_encode($res);
+        
     }
 
     public function getallkegiatan()
@@ -292,9 +332,6 @@ class api extends CI_Controller
         $this->db->where('waktu',$waktu);
         $this->db->from($table);
 
-
-
-
         $query=$this->db->get();
 
         if($query->num_rows()>0)
@@ -354,7 +391,7 @@ class api extends CI_Controller
             print $log;
             return;
         }
-        
+
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -366,7 +403,6 @@ class api extends CI_Controller
             echo json_encode($hasil);
         }
     }
-
 
      /*Get data harga from api*/
     public function getHarga()
@@ -445,6 +481,81 @@ class api extends CI_Controller
             echo json_encode($harga);
         }
     }
+
+    /* get Detail Ketersediaan dari jenis tanaman di seluruh kecamatan*/
+    public function getDetailKetersediaan()
+    {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log=$this->login($username,$password);
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $tanaman = $this->input->post('tanaman');
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $waktu = $tahun.'-'.$bulan. '-01';
+
+        $arr_select=array("jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
+        $this->db->select($arr_select);
+        $this->db->from('ketersediaan');
+        $this->db->where('jenis_tanaman',$tanaman);
+        $this->db->where('waktu',$waktu);
+        $this->db->where('id_kecamatan',25);
+
+        $query = $this->db->get();
+        $rows = $query->result();
+        /*  
+            : Ratio > 1,14 = surplus    
+            : Ratio 1,00 - 1,14 = Swasembada    
+            : Ratio 0,95 - 1,00 = Cukup 
+            : Ratio < 0,95 = Defisit    
+        */
+        if($rows[0]->rasio_ketersediaan > 1.14) 
+            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Surplus'));
+        elseif($rows[0]->rasio_ketersediaan > 1.00)
+            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Swasembada'));
+        elseif($rows[0]->rasio_ketersediaan > 0.95)
+            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Cukup'));
+        else 
+            $result['getdetailketersediaan'] = (object) array_merge((array)$rows[0], array('ratio'=>'Defisit'));
+
+        echo json_encode($result);
+    }
+
+    /* get Ketersediaan semua tanaman di seluruh kecamatan*/
+    public function getAllKetersediaan()
+    {
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $waktu = $tahun.'-'.$bulan. '-01';
+
+        $arr_select=array("jenis_tanaman","jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
+        $this->db->select($arr_select);
+        $this->db->from('ketersediaan');
+        $this->db->where('waktu',$waktu);
+        $this->db->where('id_kecamatan',25);
+
+        $query = $this->db->get();
+        $rows['getallketersediaan'] = $query->result_array();
+
+        echo json_encode($rows);
+    }
+
+
+
 
 
 }
