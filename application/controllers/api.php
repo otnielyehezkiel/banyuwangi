@@ -257,12 +257,6 @@ class api extends CI_Controller
         $tahun=$this->input->post('tahun');
         $kode_kecamatan=$this->input->post('kecamatan');
         $waktu= $tahun.'-'.$bulan. '-01';
-//        var_dump($username);
-//        var_dump($password);
-//        var_dump($bulan);
-//        var_dump($tahun);
-//        var_dump($kode_kecamatan);
-//        var_dump($waktu);
         $log=$this->login($username,$password);
 
         if($log!=1)
@@ -317,6 +311,16 @@ class api extends CI_Controller
     /*Get data pasar di banyuwangi*/
     public function getPasar()
     {
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterMarket";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -341,6 +345,15 @@ class api extends CI_Controller
     /*Get data komoditas*/
     public function getKomoditas()
     {
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -378,6 +391,16 @@ class api extends CI_Controller
      /*Get data harga from api*/
     public function getHarga()
     {
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
         $tanggal = $this->input->post('tanggal');
         $id_pasar = $this->input->post('id_pasar');
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
@@ -430,7 +453,6 @@ class api extends CI_Controller
                 $id = $row['commodity_id'];
                 $row = array_merge($row,$kom[$id]);
             }
-            
             foreach($res3['result'] as $row1){
                 if($row1['market_id'] == $id_pasar){
                     $harga['getharga']['yesterday'] = $row1['details'] ;
