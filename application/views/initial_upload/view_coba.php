@@ -13,14 +13,10 @@ $this->load->view('page/header');
                 <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/cobaupload/hasilupload" method="post" >
                     <div style="margin-bottom: 25px" class="input-group">
                         <select name="jenisdata" class="form-control" onchange="changelinkname()" id="jenisdata">
-                                <option value="1">Data Beras Padi Sawah</option>
-                                <option value="2">Data Beras Padi Ladang</option>
-                                <option value="3">Data Jagung</option>
-                                <option value="4">Data Produksi Tanaman Perkebunan</option>
-                                <option value="5">Data Produksi Tanaman Perkebunan</option>
-                                <option value="6">Data Produksi Tanaman Perkebunan</option>
-                                <option value="7">Data Produksi Tanaman Perkebunan</option>
-                                <option value="8">Data Produksi Tanaman Perkebunan</option>
+                                <option value="1">Produksi Tanaman Bahan Makanan</option>
+                                <option value="2">Produksi Sayur-sayuran</option>
+                                <option value="3">Produksi Buah-buahan</option>
+                                <option value="4">Produksi Tanaman Perkebunan</option>
                             </select>
                         
                     </div>

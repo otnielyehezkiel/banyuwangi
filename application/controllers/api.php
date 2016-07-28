@@ -206,7 +206,7 @@ class api extends CI_Controller
 
     }
 
-    /* insert All Data */
+    /* Get All Data */
     public function getalldata()
     {
         $username = $this->input->post('username');
@@ -223,7 +223,10 @@ class api extends CI_Controller
         $data = array();
         foreach ($table as $val)
         {
-            $query=$this->db->get($val);
+            $this->db->select('*');
+            $this->db->from($val);
+            $this->db->join('jenis_tanaman j','j.id_tanaman = '.$val.'.id_tanaman');
+            $query = $this->db->get();
             $res=$query->result_array();
             $data[$val]=$res;
         }
@@ -257,8 +260,8 @@ class api extends CI_Controller
         foreach ($tanaman as $row) {
             $query = $this->db->query("
                     SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun 
-                    FROM bahan_makanan
-                    where jenis_tanaman = '".$row. "'
+                    FROM bahan_makanan b, jenis_tanaman j
+                    where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$row. "'
                     GROUP BY tahun
                 ");
             $hasil[$row] = $query->result();
@@ -269,6 +272,8 @@ class api extends CI_Controller
         echo json_encode($res);
         
     }
+
+    public function registrasi(){}
 
     public function getallkegiatan()
     {
@@ -501,8 +506,9 @@ class api extends CI_Controller
 
         $arr_select=array("jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
         $this->db->select($arr_select);
-        $this->db->from('ketersediaan');
-        $this->db->where('jenis_tanaman',$tanaman);
+        $this->db->from('ketersediaan k');
+        $this->db->join('jenis_tanaman j', 'j.id_tanaman = k.id_tanaman');
+        $this->db->where('nama_tanaman',$tanaman);
         $this->db->where('waktu',$waktu);
         $this->db->where('id_kecamatan',25);
 
@@ -542,9 +548,10 @@ class api extends CI_Controller
         $tahun = $this->input->post('tahun');
         $waktu = $tahun.'-'.$bulan. '-01';
 
-        $arr_select=array("jenis_tanaman","jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
+        $arr_select=array("nama_tanaman","jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
         $this->db->select($arr_select);
-        $this->db->from('ketersediaan');
+        $this->db->from('ketersediaan k');
+        $this->db->join('jenis_tanaman j', 'j.id_tanaman = k.id_tanaman');
         $this->db->where('waktu',$waktu);
         $this->db->where('id_kecamatan',25);
 
