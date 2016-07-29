@@ -61,19 +61,14 @@ class api extends CI_Controller
     public function getdata($table)
     {
 
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $bulan=$this->input->post('bulan');
-        $tahun=$this->input->post('tahun');
-        $kode_kecamatan=$this->input->post('kecamatan');
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $bulan = $this->input->post('bulan');
+        $tahun = $this->input->post('tahun');
+        $kode_kecamatan = $this->input->post('kecamatan');
         $waktu= $tahun.'-'.$bulan. '-01';
-//        var_dump($username);
-//        var_dump($password);
-//        var_dump($bulan);
-//        var_dump($tahun);
-//        var_dump($kode_kecamatan);
-//        var_dump($waktu);
-        $log=$this->login($username,$password);
+
+        $log = $this->login($username,$password);
 
         if($log!=1)
         {
@@ -84,8 +79,8 @@ class api extends CI_Controller
 
         if($kode_kecamatan!=52500)
         {
-            $query=$this->db->query("SELECT id_kecamatan from kecamatan where kode_kecamatan='$kode_kecamatan';");
-            $query=$query->result();
+            $query = $this->db->query("SELECT id_kecamatan from kecamatan where kode_kecamatan='$kode_kecamatan';");
+            $query = $query->result();
             $id_kecamatan=$query[0]->id_kecamatan;
         }
 
@@ -93,36 +88,39 @@ class api extends CI_Controller
         if($kode_kecamatan==52500)
         {
             $field=$this->db->list_fields($table);
+
             foreach ($arr_select as $val)
             {
                 $this->db->select_sum($val);
             }
-            $this->db->group_by('jenis_tanaman');
+            $this->db->group_by('j.nama_tanaman');
+            $this->db->select('j.nama_tanaman');
             $this->db->select($table.'.'.$field[0]);
             $this->db->select($table.'.'.$field[1]);
             $this->db->select($table.'.'.$field[2]);
             $this->db->select($table.'.'.$field[3]);
-            $this->db->select('kode_kabupaten');
-            $this->db->select('kode_kecamatan');
-            $this->db->select('nama_kecamatan');
+            $this->db->select('k.kode_kabupaten');
+            $this->db->select('k.kode_kecamatan');
+            $this->db->select('k.nama_kecamatan');
             $this->db->select('waktu');
+            
+
         }
         else
         {
             $this->db->where("$table.id_kecamatan",$id_kecamatan);
         }
-        $this->db->join('kecamatan',"kecamatan.id_kecamatan=$table.id_kecamatan");
+
+        $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
+        $this->db->join('kecamatan k',"k.id_kecamatan = $table.id_kecamatan" );
         $this->db->where('waktu',$waktu);
         $this->db->from($table);
-
-
-
 
         $query=$this->db->get();
 
         if($query->num_rows()>0)
         {
-            $data[$table]=$query->result_array();
+            $data[$table] = $query->result_array();
             print json_encode($data);
         }
         else
