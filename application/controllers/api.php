@@ -464,23 +464,22 @@ class api extends CI_Controller
         if($res['success']==1 && $res3['success']==1){
             foreach($res['result'] as $row){
                 if($row['market_id'] == $id_pasar){
-                    $today['today'] = $row['details'];
-                    $harga['getharga'] = $today;
+                    $harga['getharga'] = $row['details'];
                 }
-            }
-            foreach($harga['getharga']['today'] as &$row) {
-                $id = $row['commodity_id'];
-                $row = array_merge($row,$kom[$id]);
             }
             foreach($res3['result'] as $row1){
                 if($row1['market_id'] == $id_pasar){
-                    $harga['getharga']['yesterday'] = $row1['details'] ;
+                    $kemarin = $row1['details'] ;
                 }
-            } 
-            foreach($harga['getharga']['yesterday'] as &$row2) {
-                $id = $row2['commodity_id'];
-                $row2 = array_merge($row2,$kom[$id]);
             }
+            $price_yes = array_column($kemarin, 'price', 'commodity_id');
+
+            foreach($harga['getharga'] as &$row) {
+                $id = $row['commodity_id'];
+                $row = array_merge($row, $kom[$id]);
+                $row = array_merge($row, array('price_yesterday' =>  $price_yes[$id]) );
+            }
+
             echo json_encode($harga);
         }
     }
