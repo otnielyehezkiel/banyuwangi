@@ -110,13 +110,17 @@ class data extends admin_controller
     {
         $this->load->model("excelmodel");
         $this->load->model("mdata");
+
         $filepath = $this->input->post('filepath');
         $checked_value = $this->input->post('row');
         $id_tanaman = $this->input->post('tanaman');
+         $waktu = date(date("Y-m-d",strtotime($this->input->post('waktu'))));
+
         $arr_data = $this->excelmodel->getExcelData($filepath);
-        $waktu=date(date("Y-m-d",strtotime($this->input->post('waktu'))));
-        $this->mdata->insertKonsumsi($id_tanaman,$arr_data['arr_data'],$checked_value,$waktu);
-        //redirect(site_url().'/upload_konsumsi');
+       
+        $result = $this->mdata->insertKonsumsi($id_tanaman,$arr_data['arr_data'],$checked_value,$waktu);
+        // echo $result;
+        redirect(site_url().'/upload_konsumsi');
     }
 
     public function viewdata($table)

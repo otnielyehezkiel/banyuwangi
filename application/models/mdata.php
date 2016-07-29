@@ -51,13 +51,12 @@ class mdata extends CI_MODEL
         if (empty($cek)) {
             return;
         }
-
+        $query = array();
         foreach ($arr_check as $index)
         {
             $index+=1;
             $val= $arr_data[$index];
             $cekada=$this->db->query("SELECT * from $table WHERE id_kabupaten = 1 and id_kecamatan='$val[1]' and id_tanaman=$id_tanaman and waktu='$waktu'");
-            var_dump($cekada);
             foreach ($val as &$row) {
                $row = str_replace(',','',$row);        
             }
@@ -75,7 +74,7 @@ class mdata extends CI_MODEL
             }
             
             if($cekada->num_rows()==0){
-                $query=$this->db->query("INSERT INTO $table VALUES(
+                $query[]=$this->db->query("INSERT INTO $table VALUES(
                         null,1, $val[1], $val[3], $val[4], $val[5], $val[6], $val[7],
                         $val[8], $val[9], $val[10], $val[11], $val[12], $val[13] , $val[14], '$waktu',
                         $id_tanaman
@@ -108,9 +107,16 @@ class mdata extends CI_MODEL
 
                 $this->db->set($update_arr);
                 $this->db->where($where);
-                $hasil = $this->db->update($table);
+                $query[] = $this->db->update($table);
             }
         }
+
+        foreach ($query as $row) {
+            if($row === false){
+                return false;
+            }
+        }
+        return true;
     }
 
     public function getData($table)
