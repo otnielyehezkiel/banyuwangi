@@ -60,7 +60,7 @@ $this->load->view('page/header');
                                             echo "<td>$no</td>";
                                             echo "<td>$val->nama_kabupaten</td>";
                                             echo "<td>$val->nama_kecamatan</td>";
-                                            echo "<td>$val->jenis_tanaman</td>";
+                                            echo "<td>$val->nama_tanaman</td>";
                                             echo "<td>$val->luas_panen</td>";
                                             echo "<td>$val->produktivitas</td>";
                                             echo "<td>$val->produksi</td>";

@@ -17,8 +17,9 @@ $this->load->view('page/header');
                 <div class="clearfix"></div>
                 <div class="page-tables">
                     <div class="table-responsive" style="; min-height: 200px;overflow-x: auto">
-                        <form method="post" action="<?php echo site_url('/data/savefromexcel').'/'.$jenis_data?>">
+                        <form method="post" action="<?php echo site_url('/data/savefromexceltokonsumsi') ?>">
                             <input type="hidden" name="filepath" value="<?php echo $filepath; ?>">
+                            <input type='hidden' name='tanaman' value="<?php echo $jenis_data; ?>">
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -34,10 +35,18 @@ $this->load->view('page/header');
                                     <th><input type="checkbox"  id="checkbox_check_semua" onclick="checkall(this)"/> </th>
                                     <th>No</th>
                                     <th>Nama Kecamatan</th>
-                                    <th>Jenis Tanaman</th>
-                                    <th>Luas Panen (Ha)</th>
-                                    <th>Produktivitas</th>
-                                    <th>Produksi (Ton)</th>
+                                    <th>Jumlah Penduduk</th>
+                                    <th>Luas Panen</th>
+                                    <th>Provitas</th>
+                                    <th>Produksi Kedelai</th>
+                                    <th>Konversi Kedelai</th>
+                                    <th>Bibit</th>
+                                    <th>Pakan</th>
+                                    <th>Tercecer</th>
+                                    <th>Ketersediaan Kedelai</th>
+                                    <th>Kebutuhan Konsumsi</th>
+                                    <th>Perimbangan</th>
+                                    <th>Ratio Ketersediaan</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -49,11 +58,19 @@ $this->load->view('page/header');
                                     echo "<tr>";
                                     echo "<td><input type='checkbox' name='row[]' id='row' value='$no_id'/></td>";
                                     echo "<td>$val[1]</td>";
+                                    echo "<td>$val[2]</td>";
+                                    echo "<td>$val[3]</td>";
                                     echo "<td>$val[4]</td>";
                                     echo "<td>$val[5]</td>";
                                     echo "<td>$val[6]</td>";
                                     echo "<td>$val[7]</td>";
                                     echo "<td>$val[8]</td>";
+                                    echo "<td>$val[9]</td>";
+                                    echo "<td>$val[10]</td>";
+                                    echo "<td>$val[11]</td>";
+                                    echo "<td>$val[12]</td>";
+                                    echo "<td>$val[13]</td>";
+                                    echo "<td>$val[14]</td>";
                                     echo "</tr>";
                                 }
                                 ?>

@@ -103,7 +103,20 @@ class data extends admin_controller
         $arr_data=$this->excelmodel->getExcelData($filepath);
         $waktu=date(date("Y-m-d",strtotime($this->input->post('waktu'))));
         $this->mdata->insertDataFromExcel($table,$arr_data['arr_data'],$checked_value,$waktu);
-        redirect(site_url().'/cobaupload');
+        redirect(site_url().'/upload_konsumsi');
+    }
+
+    public function saveFromExceltoKonsumsi()
+    {
+        $this->load->model("excelmodel");
+        $this->load->model("mdata");
+        $filepath = $this->input->post('filepath');
+        $checked_value = $this->input->post('row');
+        $id_tanaman = $this->input->post('tanaman');
+        $arr_data = $this->excelmodel->getExcelData($filepath);
+        $waktu=date(date("Y-m-d",strtotime($this->input->post('waktu'))));
+        $this->mdata->insertKonsumsi($id_tanaman,$arr_data['arr_data'],$checked_value,$waktu);
+        //redirect(site_url().'/upload_konsumsi');
     }
 
     public function viewdata($table)
@@ -111,7 +124,7 @@ class data extends admin_controller
         $this->load->model("mdata");
         $query=$this->mdata->getData($table);
         $kabupaten=$this->db->query("SELECT * from kabupaten");
-        $kecamatan=$this->db->query("selECT * FROm kecamatan");
+        $kecamatan=$this->db->query("SELECT * from kecamatan");
         $this->data["kabupaten"]=$kabupaten;
         $this->data["kecamatan"]=$kecamatan;
         $this->data["table_data"]=$query;

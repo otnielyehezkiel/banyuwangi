@@ -18,7 +18,7 @@ class excelmodel extends CI_MODEL
             //$column = $objPHPExcel->getActiveSheet()->getCell($cell)->getColumn();
             $column=PHPExcel_Cell::columnIndexFromString($objPHPExcel->getActiveSheet()->getCell($cell)->getColumn());
             $row = $objPHPExcel->getActiveSheet()->getCell($cell)->getRow();
-            $data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getValue();
+            $data_value = $objPHPExcel->getActiveSheet()->getCell($cell)->getFormattedValue();
             //header will/should be in row 1 only. of course this can be modified to suit your need.
             if ($row == 1) {
                 $header[$row][$column] = $data_value;

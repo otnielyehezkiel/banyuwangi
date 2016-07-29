@@ -185,7 +185,7 @@
                 <li><a href="<?= site_url() ?>/cobaupload"><i class="fa fa-table"></i> Data Produksi</a></li>
             </ul>
             <ul>
-                <li><a href="<?= site_url() ?>/cobaupload"><i class="fa fa-table"></i> Data Konsumsi</a></li>
+                <li><a href="<?= site_url() ?>/upload_konsumsi"><i class="fa fa-table"></i> Data Konsumsi</a></li>
             </ul>
             
         </li>
