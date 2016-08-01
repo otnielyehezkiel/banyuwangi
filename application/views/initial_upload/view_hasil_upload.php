@@ -7,7 +7,7 @@ $this->load->view('page/header');
         <div class="panel panel-info" >
             <div class="panel-heading" style="height: 50px; padding: 0px" >
                 <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/cobaupload">Upload Excel</a></div>
-                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload <?php echo $jenis_data; ?></div>
+                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload <?php echo $nama; ?></div>
             </div>
             <div style="padding-top:30px" class="panel-body">
                 <div class="clearfix"></div>

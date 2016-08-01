@@ -11,6 +11,7 @@ $this->load->view('page/header');
             <div style="padding-top:30px" class="panel-body">
                 <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                 <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/upload_konsumsi/hasilupload" method="post" >
+                <input type="hidden" name="namajenis" id="namajenis" value=""/>
                     <div style="margin-bottom: 25px" class="input-group">
                         <select name="jenisdata" class="form-control" onchange="changelinkname()" id="jenisdata">
                                 <option value="1">Konsumsi Padi Sawah</option>
@@ -23,6 +24,8 @@ $this->load->view('page/header');
                                 <option value="8">Konsumsi Ubi Jalar</option>
                             </select>                        
                     </div>
+
+                    
                     <div style="margin-bottom: 25px" class="input-group">
                         <div style="display:none">
                             
@@ -54,11 +57,14 @@ $this->load->view('page/footer');
 
 
 <script>
-    var txt = '';
+    var txt = 'Konsumsi Padi Sawah';
+    document.getElementById('namajenis').value = txt;
+    
     function changelinkname()
     {
         txt= $("#jenisdata option:selected").text();
         document.getElementById("linkdownload").innerHTML="Download Template "+txt;
+        document.getElementById('namajenis').value = txt;
     }
 
     function gantilink() {

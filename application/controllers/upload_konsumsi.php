@@ -41,6 +41,7 @@ class Upload_konsumsi extends admin_controller {
         $this->data["title"]="Hasil Upload";
         $this->data["header"]=$hasil["header"];
         $this->data["data_val"]=$hasil["arr_data"];
+        $this->data['nama'] = $this->input->post('namajenis');
         $this->data['jenis_data']=$this->input->post('jenisdata');
         $this->load->view('initial_upload/view_hasil_upload',$this->data);
 
