@@ -7,7 +7,7 @@ $this->load->view('page/header');
         <div class="panel panel-info" >
             <div class="panel-heading" style="height: 50px; padding: 0px" >
                 <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/cobaupload">Upload Excel</a></div>
-                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload</div>
+                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload <?php echo $jenis_data; ?></div>
             </div>
             <div style="padding-top:30px" class="panel-body">
                 <div class="clearfix"></div>
@@ -38,12 +38,12 @@ $this->load->view('page/header');
                                     <th>Jumlah Penduduk</th>
                                     <th>Luas Panen</th>
                                     <th>Provitas</th>
-                                    <th>Produksi Kedelai</th>
-                                    <th>Konversi Kedelai</th>
+                                    <th>Produksi</th>
+                                    <th>Konversi</th>
                                     <th>Bibit</th>
                                     <th>Pakan</th>
                                     <th>Tercecer</th>
-                                    <th>Ketersediaan Kedelai</th>
+                                    <th>Ketersediaan </th>
                                     <th>Kebutuhan Konsumsi</th>
                                     <th>Perimbangan</th>
                                     <th>Ratio Ketersediaan</th>
