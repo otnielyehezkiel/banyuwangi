@@ -57,13 +57,13 @@ class data extends admin_controller
             //field yanga akan di sum
             $sum=array('luas_panen','produktivitas','produksi');
             $jenis_data=$this->session->userdata('jenis_data');
-
+            echo $jenis_data; die();
             if($tahun_data==-1)
             {
-                $this->datamodel->get_year_range_data('bahan_makanan',$id_kabupaten,$id_kecamatan,array('jenis_tanaman'=>$jenis_data),$sum);
+                $this->datamodel->get_year_range_data('bahan_makanan',$id_kabupaten,$id_kecamatan,array('nama_tanaman'=>$jenis_data),$sum);
             }
             else{
-                $this->datamodel->loaddata('bahan_makanan',$id_kabupaten,$id_kecamatan, $tahun_data,array('jenis_tanaman'=>$jenis_data),$sum);
+                $this->datamodel->loaddata('bahan_makanan',$id_kabupaten,$id_kecamatan, $tahun_data,array('nama_tanaman'=>$jenis_data),$sum);
             }
 
             return;
@@ -73,7 +73,7 @@ class data extends admin_controller
         $col=array('Kabupaten', 'Kecamatan','Jenis Tanaman','Luas Panen','Produktivitas','Produksi','Tahun Data');
         $data['title']="Data Produksi Bahan Makanan";
         $data['head']=$col;
-        $data['jenis_data']=$this->datamodel->getJenisData('bahan_makanan','jenis_tanaman');
+        $data['jenis_data']=$this->datamodel->getJenisData('bahan_makanan','id_tanaman');
         $data['table']='bahan_makanan';
 
         $this->load->view('view_data',$data);
@@ -82,8 +82,8 @@ class data extends admin_controller
     public function coba()
     {
         $sum=array('luas_panen','produktivitas','produksi');
-        //$this->datamodel->get_year_range_data('bahan_makanan',0,0,array('jenis_tanaman'=>"Padi Sawah"),$sum);
-        $this->datamodel->loaddata('bahan_makanan',0,0, 0,array('jenis_tanaman'=>"Padi Sawah"),$sum);
+        $this->datamodel->get_year_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
+        //$this->datamodel->loaddata('bahan_makanan',0,0, 0,array('nama_tanaman'=>"Padi Sawah"),$sum);
     }
 //    ---------------------------------------------------------------------------------------------------------------
     public function tambah($table)

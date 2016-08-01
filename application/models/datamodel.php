@@ -22,8 +22,10 @@ class datamodel extends CI_Model
         }
         $this->db->select('nama_kabupaten');
         $this->db->select('nama_kecamatan');
+        $this->db->select('nama_tanaman');
         $this->db->select("$table.*");
         $this->db->from($table);
+        $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
         $this->db->where("EXTRACT(YEAR from waktu)=",$tahun_data);
 
 
@@ -109,10 +111,11 @@ class datamodel extends CI_Model
 
     public function getJenisData($table,$field)
     {
-        $this->db->select("$field as jenis_data");
-        $this->db->group_by($field);
+        $this->db->select('nama_tanaman as jenis_data');
         $this->db->from($table);
-        $this->db->where("$field IS NOT NULL", null);
+        $this->db->join('jenis_tanaman j',"$table.id_tanaman = j.id_tanaman");
+        $this->db->where("$table.id_tanaman IS NOT NULL");
+        $this->db->group_by("$table.$field");
 
         $query=$this->db->get();
 
@@ -129,8 +132,9 @@ class datamodel extends CI_Model
         $where_str="EXTRACT(YEAR from waktu)<=YEAR(CURDATE()) and  EXTRACT(YEAR from waktu)>=YEAR(CURDATE())-5";
         $this->db->select("EXTRACT(YEAR from $table.waktu) as tahun_data");
         $this->db->from($table);
+        $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
         $this->db->where($where_str);
-        $this->db->group_by("tahun_data");
+        $this->db->group_by("tahun_data") ;
 
         if($id_kecamatan!=0)
         {
