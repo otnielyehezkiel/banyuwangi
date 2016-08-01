@@ -31,7 +31,7 @@ $this->load->view('page/header');
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="kabupaten">Kabupaten:</label>
-                            <select class="form-control" id="kabupaten" onchange="kecamatan();reloaddata()">
+                            <select class="form-control" id="kabupaten" onchange="kecamatan();reloaddata();">
 
                             </select>
                         </div>
@@ -39,7 +39,7 @@ $this->load->view('page/header');
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="kecamatan">Kecamatan:</label>
-                            <select class="form-control" id="kecamatan" onchange="reloaddata()">
+                            <select class="form-control" id="kecamatan" onchange="reloaddata();">
 
                             </select>
                         </div>
@@ -47,7 +47,7 @@ $this->load->view('page/header');
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label for="tahun_data">Tahun Data:</label>
-                            <select class="form-control" id="tahun_data" onchange="reloaddata()">
+                            <select class="form-control" id="tahun_data" onchange="flag();reloaddata();">
 
                             </select>
                         </div>
@@ -82,7 +82,7 @@ $this->load->view('page/header');
 <!--            </div>-->
 <!--        </div>-->
         <div class="panel panel-default">
-            <div class="panel-heading">Line Graphic (Data 5  tahun terakhir) <button data-toggle="collapse" data-target="#panel">Buka</button></div>
+            <div class="panel-heading">Line Graphic (Data 5  bulan terakhir) <button data-toggle="collapse" data-target="#panel">Buka</button></div>
             <div id="panel" class="panel-body collapse">
                 <div>
                     <canvas id="line_chart"></canvas>
@@ -339,6 +339,8 @@ $this->load->view('page/footer');
         line_chart(url);
     } );
 
+    var flag_tahun = false;
+
     function reloaddata()
     {
         var $select1 = $('#kabupaten');
@@ -347,7 +349,16 @@ $this->load->view('page/footer');
 
         table.ajax.url("<?php echo site_url()?>/data/<?php echo $table?>"+"/"+$select1.val()+"/"+$select2.val()+"/"+$select3.val()).load();
         var url="<?php echo site_url()?>/data/<?php echo $table?>"+"/"+$select1.val()+"/"+$select2.val()+"/"+"-1";
-        line_chart(url);
+        if(flag_tahun == false){
+            line_chart(url);    
+        } else {
+            flag_tahun = false;
+        }
+    }
+
+    function flag()
+    {
+        flag_tahun = true;
     }
 
 
@@ -359,7 +370,7 @@ $this->load->view('page/footer');
             url: "<?php echo site_url('data/set_jenis_session')?>",
             data: { value: $select.val() }
         }).done(function( msg ) {
-            reloaddata()
+            reloaddata();
         });
     }
 

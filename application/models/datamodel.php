@@ -82,7 +82,6 @@ class datamodel extends CI_Model
             }
         }
 
-
         if($query->num_rows >0)
         {
             $res=$query->result_array();
@@ -90,9 +89,10 @@ class datamodel extends CI_Model
             for ($i=0;$i<count($res);$i++)
             {
                 $keys = array_keys($res[$i]);
-                unset($res[$i][$keys[2]]);
                 unset($res[$i][$keys[3]]);
                 unset($res[$i][$keys[4]]);
+                unset($res[$i][$keys[5]]);
+                unset($res[$i][$keys[6]]);
                 if($id_kabupaten==0)
                 {
                     $res[$i][$keys[1]]="-";
@@ -129,12 +129,12 @@ class datamodel extends CI_Model
 
     public function get_year_range_data($table,$id_kabupaten,$id_kecamatan,$where,$sum)
     {
-        $where_str="EXTRACT(YEAR from waktu)<=YEAR(CURDATE()) and  EXTRACT(YEAR from waktu)>=YEAR(CURDATE())-5";
-        $this->db->select("EXTRACT(YEAR from $table.waktu) as tahun_data");
+        $where_str="EXTRACT(MONTH from waktu)>=MONTH(CURDATE())-5 and EXTRACT(YEAR from waktu) = YEAR(CURDATE())";
+        $this->db->select("MONTHNAME(waktu) as bulan_data");
         $this->db->from($table);
         $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
         $this->db->where($where_str);
-        $this->db->group_by("tahun_data") ;
+        $this->db->group_by("bulan_data") ;
 
         if($id_kecamatan!=0)
         {

@@ -57,7 +57,6 @@ class data extends admin_controller
             //field yanga akan di sum
             $sum=array('luas_panen','produktivitas','produksi');
             $jenis_data=$this->session->userdata('jenis_data');
-            echo $jenis_data; die();
             if($tahun_data==-1)
             {
                 $this->datamodel->get_year_range_data('bahan_makanan',$id_kabupaten,$id_kecamatan,array('nama_tanaman'=>$jenis_data),$sum);
@@ -82,8 +81,8 @@ class data extends admin_controller
     public function coba()
     {
         $sum=array('luas_panen','produktivitas','produksi');
-        $this->datamodel->get_year_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
-        //$this->datamodel->loaddata('bahan_makanan',0,0, 0,array('nama_tanaman'=>"Padi Sawah"),$sum);
+        // $this->datamodel->get_year_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
+        $this->datamodel->loaddata('bahan_makanan',0,0, 0,array('nama_tanaman'=>"Padi Sawah"),$sum);
     }
 //    ---------------------------------------------------------------------------------------------------------------
     public function tambah($table)
