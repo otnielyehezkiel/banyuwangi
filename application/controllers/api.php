@@ -506,6 +506,7 @@ class api extends CI_Controller
     {
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+        $id_kecamatan = $this->input->post('id_kecamatan');
         $log=$this->login($username,$password);
         if($log!=1)
         {
@@ -524,7 +525,7 @@ class api extends CI_Controller
         $this->db->join('jenis_tanaman j', 'j.id_tanaman = k.id_tanaman');
         $this->db->where('nama_tanaman',$tanaman);
         $this->db->where('waktu',$waktu);
-        $this->db->where('id_kecamatan',25);
+        $this->db->where('id_kecamatan',$id_kecamatan);
 
         $query = $this->db->get();
         $rows = $query->result();
