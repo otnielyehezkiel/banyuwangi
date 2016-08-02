@@ -302,7 +302,12 @@ class api extends CI_Controller
             return;
         }
 
-        $query=$this->db->query("SELECT al.foto, al.keterangan,al.tanggal, um.username from aktifitas_lapangan al, users_mobile um where um.id_user=al.id_user;");
+        $query=$this->db->query("SELECT al.foto, al.keterangan,al.tanggal, um.username 
+                                from aktifitas_lapangan al, users_mobile um 
+                                where um.id_user=al.id_user
+                                order by al.tanggal DESC;
+                            ");
+
         $data["kegiatan"]=$query->result_array();
 
         print json_encode($data);
@@ -513,17 +518,14 @@ class api extends CI_Controller
             print $log;
             return;
         }
-
-        $tanaman = $this->input->post('tanaman');
         $bulan = $this->input->post('bulan');
         $tahun = $this->input->post('tahun');
         $waktu = $tahun.'-'.$bulan. '-01';
 
-        $arr_select=array("jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
+        $arr_select=array("nama_tanaman","jumlah_penduduk","luas_panen","provitas","produksi_padi","konversi_beras","bibit","pakan","tercecer","ketersediaan_beras","kebutuhan_konsumsi_riil","perimbangan","rasio_ketersediaan");
         $this->db->select($arr_select);
         $this->db->from('ketersediaan k');
         $this->db->join('jenis_tanaman j', 'j.id_tanaman = k.id_tanaman');
-        $this->db->where('nama_tanaman',$tanaman);
         $this->db->where('waktu',$waktu);
         $this->db->where('id_kecamatan',$id_kecamatan);
 
@@ -540,15 +542,19 @@ class api extends CI_Controller
             echo json_encode($result);
             return;
         }
-
-        if($rows[0]['rasio_ketersediaan'] > 1.14) 
-            $result['getdetailketersediaan'] =  array_merge($rows[0], array('ratio'=>'Surplus'));
-        elseif($rows[0]['rasio_ketersediaan'] > 1.00)
-            $result['getdetailketersediaan'] =   array_merge($rows[0], array('ratio'=>'Swasembada'));
-        elseif($rows[0]['rasio_ketersediaan']  > 0.95)
-            $result['getdetailketersediaan'] =   array_merge($rows[0], array('ratio'=>'Cukup'));
-        else 
-            $result['getdetailketersediaan'] = array_merge($rows[0], array('ratio'=>'Defisit'));
+        $i = 0;
+        foreach($rows as $row){
+            if($row['rasio_ketersediaan'] > 1.14) 
+                $result['getdetailketersediaan'][$i] =  array_merge($row, array('ratio'=>'Surplus'));
+            elseif($row['rasio_ketersediaan'] > 1.00)
+                $result['getdetailketersediaan'][$i] =   array_merge($row, array('ratio'=>'Swasembada'));
+            elseif($row['rasio_ketersediaan'] > 0.95)
+                $result['getdetailketersediaan'][$i] =   array_merge($row, array('ratio'=>'Cukup'));
+            else 
+                $result['getdetailketersediaan'][$i] = array_merge($row, array('ratio'=>'Defisit'));
+            $i++;
+        }
+        
 
         echo json_encode($result);
     }
@@ -578,7 +584,6 @@ class api extends CI_Controller
 
         $query = $this->db->get();
         $rows['getallketersediaan'] = $query->result_array();
-
         echo json_encode($rows);
     }
 
