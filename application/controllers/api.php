@@ -235,9 +235,9 @@ class api extends CI_Controller
     public function getTahunProduksi(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
-        $id_tanaman = 0;
-        if($this->input->post('id_tanaman') != null){
-            $id_tanaman = $this->input->post('id_tanaman');
+        $nama_tanaman = 0;
+        if($this->input->post('tanaman') != null){
+            $nama_tanaman = $this->input->post('tanaman');
         }
         $log = $this->login($username,$password);
 
@@ -259,15 +259,15 @@ class api extends CI_Controller
             );
 
         $hasil = array();
-        if($id_tanaman != 0){
+        if($nama_tanaman != 0){
             $query = $this->db->query("
                         SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun 
                         FROM bahan_makanan b, jenis_tanaman j
-                        where b.id_tanaman = j.id_tanaman and b.id_tanaman = '".$id_tanaman. "'
+                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = = '".$nama_tanaman. "'
                         GROUP BY tahun
                     ");
-            $nama = $tanaman[$id_tanaman-1];
-            $hasil[$nama] = $query->result();
+            
+            $hasil[$nama_tanaman] = $query->result();
         }
         else {
             foreach ($tanaman as $row) {
