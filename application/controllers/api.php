@@ -528,21 +528,27 @@ class api extends CI_Controller
         $this->db->where('id_kecamatan',$id_kecamatan);
 
         $query = $this->db->get();
-        $rows = $query->result();
+        $rows = $query->result_array();
         /*  
             : Ratio > 1,14 = surplus    
             : Ratio 1,00 - 1,14 = Swasembada    
             : Ratio 0,95 - 1,00 = Cukup 
             : Ratio < 0,95 = Defisit    
         */
-        if($rows[0]->rasio_ketersediaan > 1.14) 
-            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Surplus'));
-        elseif($rows[0]->rasio_ketersediaan > 1.00)
-            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Swasembada'));
-        elseif($rows[0]->rasio_ketersediaan > 0.95)
-            $result['getdetailketersediaan'] =  (object) array_merge((array)$rows[0], array('ratio'=>'Cukup'));
+        if($rows == null){
+            $result['getdetailketersediaan'] = 'Data Kosong';
+            echo json_encode($result);
+            return;
+        }
+
+        if($rows[0]['rasio_ketersediaan'] > 1.14) 
+            $result['getdetailketersediaan'] =  array_merge($rows[0], array('ratio'=>'Surplus'));
+        elseif($rows[0]['rasio_ketersediaan'] > 1.00)
+            $result['getdetailketersediaan'] =   array_merge($rows[0], array('ratio'=>'Swasembada'));
+        elseif($rows[0]['rasio_ketersediaan']  > 0.95)
+            $result['getdetailketersediaan'] =   array_merge($rows[0], array('ratio'=>'Cukup'));
         else 
-            $result['getdetailketersediaan'] = (object) array_merge((array)$rows[0], array('ratio'=>'Defisit'));
+            $result['getdetailketersediaan'] = array_merge($rows[0], array('ratio'=>'Defisit'));
 
         echo json_encode($result);
     }
