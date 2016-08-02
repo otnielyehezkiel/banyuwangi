@@ -37,43 +37,47 @@ class datamodel extends CI_Model
             }
         }
 
-        if($id_kecamatan!=0)
+        if($id_kecamatan != 0)
         {
             $this->db->join('kecamatan',"kecamatan.id_kecamatan=$table.id_kecamatan");
             $this->db->join('kabupaten',"kabupaten.id_kabupaten=$table.id_kabupaten");
             $this->db->where("$table.id_kecamatan",$id_kecamatan);
             $this->db->where("$table.id_kabupaten",$id_kabupaten);
+            
+            if(!empty($sum)){
+                foreach ($sum as $val)
+                {
+                    $this->db->select($val);
+                }
+            }
             $query=$this->db->get();
         }
         else
         {
+            $this->db->join('kecamatan',"kecamatan.id_kecamatan=$table.id_kecamatan");
+            $this->db->join('kabupaten',"kabupaten.id_kabupaten=$table.id_kabupaten");
+
             if($id_kabupaten!=0)
             {
-                
-                $this->db->join('kecamatan',"kecamatan.id_kecamatan=$table.id_kecamatan");
-                $this->db->join('kabupaten',"kabupaten.id_kabupaten=$table.id_kabupaten");
-                //$this->db->where("$table.id_kecamatan",$id_kecamatan);
                 $this->db->where("$table.id_kabupaten",$id_kabupaten);
-
-//                if(!empty($sum))
-//                {
-//                    foreach ($sum as $val)
-//                    {
-//                        $this->db->select_sum($val);
-//                    }
-//                }
-                $query=$this->db->get();
-            }
-            else
-            {
-                $this->db->join('kecamatan',"kecamatan.id_kecamatan=$table.id_kecamatan");
-                $this->db->join('kabupaten',"kabupaten.id_kabupaten=$table.id_kabupaten");
-
+                $this->db->where("$table.id_kecamatan",25);
                 if(!empty($sum))
                 {
                     foreach ($sum as $val)
                     {
-                        $this->db->select_sum($val);
+                        $this->db->select($val);
+                    }
+                }
+                $query=$this->db->get();
+            }
+            else
+            {
+                // $this->db->where("$table.id_kabupaten",1);
+                if(!empty($sum))
+                {
+                    foreach ($sum as $val)
+                    {
+                        $this->db->select($val);
                     }
                 }
 
@@ -127,14 +131,14 @@ class datamodel extends CI_Model
         return NULL;
     }
 
-    public function get_year_range_data($table,$id_kabupaten,$id_kecamatan,$where,$sum)
+    public function get_month_range_data($table,$id_kabupaten,$id_kecamatan,$where,$sum)
     {
         $where_str="EXTRACT(MONTH from waktu)>=MONTH(CURDATE())-5 and EXTRACT(YEAR from waktu) = YEAR(CURDATE())";
         $this->db->select("MONTHNAME(waktu) as bulan_data");
         $this->db->from($table);
         $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
         $this->db->where($where_str);
-        $this->db->group_by("bulan_data") ;
+        $this->db->group_by("waktu") ;
 
         if($id_kecamatan!=0)
         {

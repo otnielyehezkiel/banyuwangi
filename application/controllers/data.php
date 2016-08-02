@@ -55,14 +55,14 @@ class data extends admin_controller
     {
         if ($this->input->is_ajax_request()) {
             //field yanga akan di sum
-            $sum=array('luas_panen','produktivitas','produksi');
+            $sum=array('luas_panen', 'produktivitas', 'produksi');
             $jenis_data=$this->session->userdata('jenis_data');
             if($tahun_data==-1)
             {
-                $this->datamodel->get_year_range_data('bahan_makanan',$id_kabupaten,$id_kecamatan,array('nama_tanaman'=>$jenis_data),$sum);
+                $this->datamodel->get_month_range_data('bahan_makanan', $id_kabupaten, $id_kecamatan, array('nama_tanaman'=>$jenis_data), $sum);
             }
             else{
-                $this->datamodel->loaddata('bahan_makanan',$id_kabupaten,$id_kecamatan, $tahun_data,array('nama_tanaman'=>$jenis_data),$sum);
+                $this->datamodel->loaddata('bahan_makanan', $id_kabupaten, $id_kecamatan, $tahun_data, array('nama_tanaman'=>$jenis_data), $sum);
             }
 
             return;
@@ -78,11 +78,43 @@ class data extends admin_controller
         $this->load->view('view_data',$data);
     }
 
+    public function ketersediaan($id_kabupaten=0,$id_kecamatan=0, $tahun_data=0)
+    {
+        if ($this->input->is_ajax_request()) {
+            //field yanga akan di sum
+            $sum = array('luas_panen','provitas','produksi_padi', 'konversi_beras', 'bibit', 'pakan', 'tercecer', 'ketersediaan_beras', 'kebutuhan_konsumsi_riil', 'perimbangan', 'rasio_ketersediaan');
+            $jenis_data = $this->session->userdata('jenis_data');
+
+            if($tahun_data == -1)
+            {
+                $this->datamodel->get_month_range_data('ketersediaan',$id_kabupaten,$id_kecamatan,array('nama_tanaman'=>$jenis_data),$sum);
+            }
+            else{
+                $this->datamodel->loaddata('ketersediaan',$id_kabupaten,$id_kecamatan, $tahun_data,array('nama_tanaman'=>$jenis_data),$sum);
+            }
+
+            return;
+        }
+
+        $this->session->set_userdata('jenis_data',"Jagung");
+        $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit',
+                    'Pakan', 'Tercecer', 'Ketersediaan', 'Kebutuhan Konsumsi Riil', 'Perimbangan', 'Rasio Ketersediaan', 'Tahun Data'
+                );
+        $data['title'] = "Data Konsumsi dan Ketersediaan";
+        $data['head'] = $col;
+        $data['jenis_data'] = $this->datamodel->getJenisData('ketersediaan','id_tanaman');
+        $data['table'] ='ketersediaan';
+
+        $this->load->view('view_data',$data);
+    }
+
     public function coba()
     {
-        $sum=array('luas_panen','produktivitas','produksi');
-        // $this->datamodel->get_year_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
-        $this->datamodel->loaddata('bahan_makanan',0,0, 0,array('nama_tanaman'=>"Padi Sawah"),$sum);
+        // $sum=array('luas_panen','produktivitas','produksi');
+        $sum = array('luas_panen','provitas','produksi_padi', 'konversi_beras', 'bibit', 'pakan', 'tercecer', 'ketersediaan_beras', 'kebutuhan_konsumsi_riil', 'perimbangan', 'rasio_ketersediaan');
+         // $this->datamodel->get_month_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
+        // $this->datamodel->loaddata('ketersediaan',1, 0, 2016, array('nama_tanaman'=> 'Padi Sawah'), $sum);
+        $this->datamodel->get_month_range_data('ketersediaan', 0, 0, array('nama_tanaman'=>'Jagung'), $sum);
     }
 //    ---------------------------------------------------------------------------------------------------------------
     public function tambah($table)

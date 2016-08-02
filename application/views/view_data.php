@@ -1,7 +1,13 @@
 <?php
 $this->load->view('page/header');
 ?>
-
+<style>
+th { font-size: 12px; }
+td { 
+    font-size: 11px;
+    font-weight: normal; 
+}
+</style>
 
     <div class="container">
         <div class="row">
@@ -113,7 +119,7 @@ $this->load->view('page/header');
                             <tr>
                                 <?php
                                 if(!empty($head))
-                                {
+                                { 
                                     foreach ($head as $val)
                                     {
                                         echo "<th>$val</th>";
@@ -161,6 +167,7 @@ $this->load->view('page/footer');
     }
 
     var ctx = document.getElementById("chart");
+    /**/
     var graph = new Chart(ctx, {
         type: 'bar',
 
@@ -193,6 +200,8 @@ $this->load->view('page/footer');
             }
 
         },
+        'fixedHeader': true,
+        "scrollX": true,
         "ajax": {
             "url":"<?php echo site_url()?>/data/<?php echo $table?>/0/0/2015",
             "type":"POST",
@@ -348,6 +357,7 @@ $this->load->view('page/footer');
         var $select3 = $('#tahun_data');
 
         table.ajax.url("<?php echo site_url()?>/data/<?php echo $table?>"+"/"+$select1.val()+"/"+$select2.val()+"/"+$select3.val()).load();
+        
         var url="<?php echo site_url()?>/data/<?php echo $table?>"+"/"+$select1.val()+"/"+$select2.val()+"/"+"-1";
         if(flag_tahun == false){
             line_chart(url);    
@@ -432,6 +442,7 @@ $this->load->view('page/footer');
                 var arr2=Array();
                     arr2['fill']=false;
                     arr2['label']=colum_name[i];
+                    arr2['tension'] = 0;
                     arr2['data']=tmp[i];
                     arr2['backgroundColor']=dynamicColors();
                     data2.push(arr2);
@@ -440,6 +451,7 @@ $this->load->view('page/footer');
             console.log(data);
             linegraph['data']['labels']=label;
             linegraph['data']['datasets']=data2;
+
             linegraph.update();
         });
     }

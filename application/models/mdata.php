@@ -74,12 +74,25 @@ class mdata extends CI_MODEL
             }
             
             if($cekada->num_rows()==0){
-                $query[]=$this->db->query("INSERT INTO $table VALUES(
-                        null,1, $val[1], $val[3], $val[4], $val[5], $val[6], $val[7],
-                        $val[8], $val[9], $val[10], $val[11], $val[12], $val[13] , $val[14], '$waktu',
-                        $id_tanaman
-                    );
-                ");
+                $data_insert = array(
+                    'id_kabupaten' => 1,
+                    'id_kecamatan' => $val[1],
+                    'id_tanaman' => $id_tanaman,
+                    'jumlah_penduduk' => $val[3], 
+                    'luas_panen' => $val[4],
+                    'provitas' => $val[5],
+                    'produksi_padi' => $val[6],
+                    'konversi_beras' => $val[7],
+                    'bibit' => $val[8],
+                    'pakan' => $val[9],
+                    'tercecer' => $val[10],
+                    'ketersediaan_beras' => $val[11],
+                    'kebutuhan_konsumsi_riil' => $val[12],
+                    'perimbangan' => $val[13],
+                    'rasio_ketersediaan'=> $val[14],
+                    'waktu' => $waktu
+                );
+                $query[] = $this->db->insert($table,$data_insert);
             }
             else {
                 $update_arr = array(
