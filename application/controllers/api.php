@@ -542,8 +542,9 @@ class api extends CI_Controller
         $this->db->select($arr_select);
         $this->db->from('ketersediaan k');
         $this->db->join('jenis_tanaman j', 'j.id_tanaman = k.id_tanaman');
+        $this->db->join('kecamatan kc', 'kc.id_kecamatan = k.id_kecamatan')
         $this->db->where('waktu',$waktu);
-        $this->db->where('id_kecamatan',$id_kecamatan);
+        $this->db->where('kc.kode_kecamatan',$id_kecamatan);
 
         $query = $this->db->get();
         $rows = $query->result_array();
