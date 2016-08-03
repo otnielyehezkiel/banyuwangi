@@ -219,7 +219,7 @@
                 <li><a href="#"><b>Konsumsi</b></a></li>
             </ul>
             <ul>
-                <li><a href="<?= site_url() ?>/data/konsumsi"><i class="fa fa-table"></i> Konsumsi</a></li>
+                <li><a href="<?= site_url() ?>/data/ketersediaan"><i class="fa fa-table"></i> Konsumsi</a></li>
             </ul>
             <ul>
                 <li><a href="#"><b>Harga<b> </a></li>

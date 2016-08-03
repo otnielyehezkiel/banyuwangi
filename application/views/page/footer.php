@@ -48,7 +48,7 @@
 <script src="<?= base_url() ?>static/js/filter.js"></script> <!-- Filter for support page -->
 <script src="<?= base_url() ?>static/js/custom.js"></script> <!-- Custom codes -->
 <!--<script src="<?= base_url() ?>static/js/custom_detailProject.js"></script>  Custom codes -->
-<!--<script src="--><?//= base_url() ?><!--static/js/charts.js"></script> <!-- Charts & Graphs -->-->
+<!--<script src="--><?//= base_url() ?><!--static/js/charts.js"></script> <!-- Charts & Graphs -->
 <script src="<?= base_url() ?>static/chartjs/Chart.js"></script>
 <!-- Script for this page -->
 <script>

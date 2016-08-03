@@ -203,7 +203,7 @@ $this->load->view('page/footer');
         'fixedHeader': true,
         "scrollX": true,
         "ajax": {
-            "url":"<?php echo site_url()?>/data/<?php echo $table?>/0/0/2015",
+            "url":"<?php echo site_url()?>/data/<?php echo $table?>/0/0/2016",
             "type":"POST",
             "datatype":"json"
         }

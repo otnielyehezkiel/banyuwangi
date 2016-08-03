@@ -82,7 +82,7 @@ class data extends admin_controller
     {
         if ($this->input->is_ajax_request()) {
             //field yanga akan di sum
-            $sum = array('luas_panen','provitas','produksi_padi', 'konversi_beras', 'bibit', 'pakan', 'tercecer', 'ketersediaan_beras', 'kebutuhan_konsumsi_riil', 'perimbangan', 'rasio_ketersediaan');
+            $sum = array('jumlah_penduduk','luas_panen','provitas','produksi_padi', 'konversi_beras', 'bibit', 'pakan', 'tercecer', 'ketersediaan_beras', 'kebutuhan_konsumsi_riil', 'perimbangan', 'rasio_ketersediaan');
             $jenis_data = $this->session->userdata('jenis_data');
 
             if($tahun_data == -1)
@@ -97,7 +97,7 @@ class data extends admin_controller
         }
 
         $this->session->set_userdata('jenis_data',"Jagung");
-        $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit',
+        $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman','Jumlah Penduduk', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit',
                     'Pakan', 'Tercecer', 'Ketersediaan', 'Kebutuhan Konsumsi Riil', 'Perimbangan', 'Rasio Ketersediaan', 'Tahun Data'
                 );
         $data['title'] = "Data Konsumsi dan Ketersediaan";
@@ -113,8 +113,8 @@ class data extends admin_controller
         // $sum=array('luas_panen','produktivitas','produksi');
         $sum = array('luas_panen','provitas','produksi_padi', 'konversi_beras', 'bibit', 'pakan', 'tercecer', 'ketersediaan_beras', 'kebutuhan_konsumsi_riil', 'perimbangan', 'rasio_ketersediaan');
          // $this->datamodel->get_month_range_data('bahan_makanan',0,0,array('nama_tanaman'=>"Padi Sawah"),$sum);
-        // $this->datamodel->loaddata('ketersediaan',1, 0, 2016, array('nama_tanaman'=> 'Padi Sawah'), $sum);
-        $this->datamodel->get_month_range_data('ketersediaan', 0, 0, array('nama_tanaman'=>'Jagung'), $sum);
+        $this->datamodel->loaddata('ketersediaan',1, 0, 2016, array('nama_tanaman'=> 'Padi Sawah'), $sum);
+        // $this->datamodel->get_month_range_data('ketersediaan', 0, 0, array('nama_tanaman'=>'Jagung'), $sum);
     }
 //    ---------------------------------------------------------------------------------------------------------------
     public function tambah($table)

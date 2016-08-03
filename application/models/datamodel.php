@@ -86,6 +86,7 @@ class datamodel extends CI_Model
             }
         }
 
+         // var_dump($query->result_array());die();
         if($query->num_rows >0)
         {
             $res=$query->result_array();
@@ -104,7 +105,7 @@ class datamodel extends CI_Model
                 $data["data"][$i]=array_values($res[$i]);
 
             }
-            
+           
             print json_encode($data);
         }
         else{
