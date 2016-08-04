@@ -8,11 +8,11 @@
 
 class datamodel extends CI_Model
 {
-    public function loaddata($table,$id_kabupaten=0,$id_kecamatan=0, $tahun_data=0,$where=array(),$sum)
+    public function loaddata($table,$id_kabupaten=0,$id_kecamatan=0, $tahun_data=0,$where=array(),$sum,$bulan_data=0)
     {
 
-        if($tahun_data==0)
-        {
+
+        if($tahun_data==0){
             $query=$this->db->query("select max(EXTRACT(YEAR from waktu)) as tahun_data from $table");
             if($query->num_rows() > 0)
             {
@@ -26,6 +26,9 @@ class datamodel extends CI_Model
         $this->db->select("$table.*");
         $this->db->from($table);
         $this->db->join('jenis_tanaman j','j.id_tanaman = '.$table.'.id_tanaman');
+        if($bulan_data){
+            $this->db->where("MONTHNAME(waktu)=",$bulan_data);
+        }
         $this->db->where("EXTRACT(YEAR from waktu)=",$tahun_data);
 
 
@@ -60,7 +63,6 @@ class datamodel extends CI_Model
             if($id_kabupaten!=0)
             {
                 $this->db->where("$table.id_kabupaten",$id_kabupaten);
-                $this->db->where("$table.id_kecamatan",25);
                 if(!empty($sum))
                 {
                     foreach ($sum as $val)
@@ -72,7 +74,7 @@ class datamodel extends CI_Model
             }
             else
             {
-                // $this->db->where("$table.id_kabupaten",1);
+                $this->db->where("$table.id_kabupaten",1);
                 if(!empty($sum))
                 {
                     foreach ($sum as $val)

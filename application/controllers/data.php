@@ -44,6 +44,12 @@ class data extends admin_controller
         print json_encode($query->result_array());
     }
 
+    public function getbulan($table)
+    {
+        $query = $this->db->query("select distinct MONTHNAME(waktu) as bulan_data from $table group by bulan_data order by waktu desc;");
+        echo json_encode($query->result_array());
+    }
+
     public function set_jenis_session()
     {
         $value=$this->input->post('value');
@@ -78,7 +84,7 @@ class data extends admin_controller
         $this->load->view('view_data',$data);
     }
 
-    public function ketersediaan($id_kabupaten=0,$id_kecamatan=0, $tahun_data=0)
+    public function ketersediaan($id_kabupaten=0,$id_kecamatan=0, $tahun_data=0,$bulan_data=0)
     {
         if ($this->input->is_ajax_request()) {
             //field yanga akan di sum
@@ -90,22 +96,21 @@ class data extends admin_controller
                 $this->datamodel->get_month_range_data('ketersediaan',$id_kabupaten,$id_kecamatan,array('nama_tanaman'=>$jenis_data),$sum);
             }
             else{
-                $this->datamodel->loaddata('ketersediaan',$id_kabupaten,$id_kecamatan, $tahun_data,array('nama_tanaman'=>$jenis_data),$sum);
+                $this->datamodel->loaddata('ketersediaan',$id_kabupaten,$id_kecamatan, $tahun_data,array('nama_tanaman'=>$jenis_data),$sum,$bulan_data);
             }
 
             return;
         }
 
         $this->session->set_userdata('jenis_data',"Jagung");
-        $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman','Jumlah Penduduk', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit',
-                    'Pakan', 'Tercecer', 'Ketersediaan', 'Kebutuhan Konsumsi Riil', 'Perimbangan', 'Rasio Ketersediaan', 'Tahun Data'
+        $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman','Jumlah Penduduk', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit', 'Pakan', 'Tercecer', 'Ketersediaan', 'Kebutuhan Konsumsi Riil', 'Perimbangan', 'Rasio Ketersediaan', 'Tahun Data'
                 );
         $data['title'] = "Data Konsumsi dan Ketersediaan";
         $data['head'] = $col;
         $data['jenis_data'] = $this->datamodel->getJenisData('ketersediaan','id_tanaman');
         $data['table'] ='ketersediaan';
 
-        $this->load->view('view_data',$data);
+        $this->load->view('view_data_konsumsi',$data);
     }
 
     public function coba()
