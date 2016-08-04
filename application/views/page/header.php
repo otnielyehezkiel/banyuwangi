@@ -54,6 +54,7 @@
 <link rel="stylesheet" type="text/css" href="<?= base_url() ?>static/js/select2/select2.css" />
 <script src="<?= base_url() ?>static/js/jquery-2.1.3.min.js"></script> <!-- jQuery -->
 <script src="<?= base_url() ?>static/js/bootstrap.js"></script> <!-- Bootstrap -->
+<script src="<?= base_url() ?>static/js/bootstrap-datetimepicker.min.js"></script>
 <script src="<?= base_url() ?>static/js/jquery-ui.min.js"></script> <!-- jQuery UI -->
 <script>
     Number.prototype.formatMoney = function(c, d, t){
@@ -222,10 +223,10 @@
                 <li><a href="<?= site_url() ?>/data/ketersediaan"><i class="fa fa-table"></i> Konsumsi</a></li>
             </ul>
             <ul>
-                <li><a href="#"><b>Harga<b> </a></li>
+                <li><a href="#"><b>Harga</b> </a></li>
             </ul>
             <ul>
-                <li><a href="<?= site_url() ?>/data/hargabp"><i class="fa fa-table"></i> Bahan Pokok</a></li>
+                <li><a href="<?= site_url() ?>/data/hargapasar"><i class="fa fa-table"></i> Bahan Pokok</a></li>
             </ul>
         </li>
        

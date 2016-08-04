@@ -268,7 +268,7 @@ class api extends CI_Controller
                         GROUP BY tahun
                     ");
             
-            $hasil[$nama_tanaman] = $query->result();
+            $hasil = $query->result();
         }
         else {
             foreach ($tanaman as $row) {

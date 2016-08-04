@@ -174,6 +174,25 @@ class data extends admin_controller
         $this->load->view('view_data_pertanian',$this->data);
     }
 
+    public function hargapasar(){
+        $username = 'admin';
+        $password = '12345678';
+        
+        $url = site_url().'/api/getpasar';
+        $post = [
+            'username' => $username,
+            'password' => $password,
+        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+        $res = json_decode($json,true);
+        $data['pasar'] = $res['getpasar'];
+        $this->load->view('view_data_harga',$data);
+    }
+
     public function hapus($table,$id)
     {
         $query=$this->db->query("DELETE FROM $table WHERE id_bahan_makanan=$id");
