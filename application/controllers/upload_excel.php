@@ -4,7 +4,7 @@ if (!defined('BASEPATH'))
   exit('No direct script access allowed');
 
 require_once APPPATH . '/libraries/admin_controller.php';
-class Upload_konsumsi extends admin_controller {
+class Upload_excel extends admin_controller {
     public $data = array('title' => 'initial upload');
 
     public function __construct() {
@@ -12,9 +12,13 @@ class Upload_konsumsi extends admin_controller {
     }
 
     public function index() {
-        $this->load->view('initial_upload/view_upload_konsumsi', $this->data);
+        
     }
     
+    public function get($jenis){
+        $this->load->view('initial_upload/view_upload_'.$jenis, $this->data);
+    }
+
     public function proses()
     {
         ini_set('memory_limit', '-1');
@@ -43,6 +47,7 @@ class Upload_konsumsi extends admin_controller {
         $this->data["data_val"]=$hasil["arr_data"];
         $this->data['nama'] = $this->input->post('namajenis');
         $this->data['jenis_data']=$this->input->post('jenisdata');
+        $this->data['table']=$this->input->post('table');
         $this->load->view('initial_upload/view_hasil_upload',$this->data);
 
     }

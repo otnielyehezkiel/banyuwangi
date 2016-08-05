@@ -11,22 +11,17 @@ $this->load->view('page/header');
             <div style="padding-top:30px" class="panel-body">
                 <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
                 <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/upload_excel/hasilupload" method="post" >
-                <input type="hidden" name="namajenis" id="namajenis" value=""/>
-                <input type="hidden" name="table" id="table" value="konsumsi"/>
                     <div style="margin-bottom: 25px" class="input-group">
+                    <input type="hidden" name="namajenis" id="namajenis" value=""/>
+                    <input type="hidden" name="table" id="table" value="produksi/bahan_makanan"/>
                         <select name="jenisdata" class="form-control" onchange="changelinkname()" id="jenisdata">
-                                <option value="1">Konsumsi Padi Sawah</option>
-                                <option value="2">Konsumsi Padi Ladang</option>
-                                <option value="3">Konsumsi Jagung</option>
-                                <option value="4">Konsumsi Kedelai</option>
-                                <option value="5">Konsumsi Kacang Tanah</option>
-                                <option value="6">Konsumsi Kacang Hijau</option>
-                                <option value="7">Konsumsi Ubi Kayu</option>
-                                <option value="8">Konsumsi Ubi Jalar</option>
-                            </select>                        
+                                <option value="1">Produksi Tanaman Bahan Makanan</option>
+                                <option value="2">Produksi Sayur-sayuran</option>
+                                <option value="3">Produksi Buah-buahan</option>
+                                <option value="4">Produksi Tanaman Perkebunan</option>
+                            </select>
+                        
                     </div>
-
-                    
                     <div style="margin-bottom: 25px" class="input-group">
                         <div style="display:none">
                             
@@ -41,7 +36,7 @@ $this->load->view('page/header');
                         </div>
                     </div>
                 </form>     
-                <a href='javascript:void(gantilink())'  id="linkdownload">Download Template Excel</a>
+                <a href="<?php echo base_url();?>/formatexcel/format_excel.xls" id="linkdownload">Download Template Excel</a>
             </div>
             <div class="panel-body">
                 <iframe id="frame_upload_response" name="frame_upload_response" style="width: 100%; border: none"></iframe>
@@ -58,47 +53,52 @@ $this->load->view('page/footer');
 
 
 <script>
-    var txt = 'Konsumsi Padi Sawah';
+    var txt = 'Produksi Tanaman Bahan Makanan';
     document.getElementById('namajenis').value = txt;
     
     function changelinkname()
     {
-        txt= $("#jenisdata option:selected").text();
-        document.getElementById("linkdownload").innerHTML="Download Template "+txt;
+        txt = $("#jenisdata option:selected").text();
+        document.getElementById('linkdownload').innerHTML = "Download Template " + txt;
         document.getElementById('namajenis').value = txt;
-    }
-
-    function gantilink() {
+        
         var id=document.getElementById("jenisdata").value;
         switch (id)
         {
             case '1':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/beras_padi_sawah.xls";
+                document.getElementById('table').value = 'produksi/bahan_makanan';
                 break;
             case '2':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/beras_padi_ladang.xls";
+                document.getElementById('table').value = 'produksi/sayur_sayuran';
                 break;
             case '3':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/jagung.xls";
+                document.getElementById('table').value = 'produksi/buah_buahan';
                 break;
             case '4':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/kedelai.xls";
+                document.getElementById('table').value = 'produksi/tanaman_perkebunan';
                 break;
-            case '5':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/kacang_tanah.xls";
-                break;
-            case '6':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/kacang_hijau.xls";
-                break;  
-            case '7':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/ubi_kayu.xls";
-                break;
-            case '8':
-                window.location = "<?php echo base_url();?>/formatexcel/ketersediaan/ubi_jalar.xls";
-                break;
-           
-        };
+        }
+    }
 
+    function gantilink() {
+
+        var id=document.getElementById("jenisdata").value;
+        
+        switch (id)
+        {
+            case '1':
+                window.location = "<?php echo base_url();?>/formatexcel/bahan_makanan.xls";
+                break;
+            case '2':
+                window.location = "<?php echo base_url();?>/formatexcel/sayur_sayuran.xls";
+                break;
+            case '3':
+                window.location = "<?php echo base_url();?>/formatexcel/buah_buahan.xls";
+                break;
+            case '4':
+                window.location = "<?php echo base_url();?>/formatexcel/tanaman_perkebunan.xls";
+                break;
+        };
     }
 </script>
 <script>
@@ -117,8 +117,10 @@ $this->load->view('page/footer');
         var files = inputFile.files;
         if (files.length > 0) {
             $('#tableListFile').html('');
+            //console.log(files);
             for (var i = 0, n = files.length; i < n; i++) {
                 var file = files[i];
+               // $('#tableListFile').append('<tr><td>' + file.name + '</td><td>Sheet <input type="text" name="sheetProcess[]" placeholder="1 atau 1,2,3" class="form-control" value="1" title="nomor sheet yang berisi data yang akan diproses"/></td></tr>');
             }
             $('#buttonSubmit').show('fast');
         }

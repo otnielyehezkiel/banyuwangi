@@ -6,7 +6,7 @@ $this->load->view('page/header');
     <div style="margin-top:10px;" class="mainbox col-md-12">
         <div class="panel panel-info" >
             <div class="panel-heading" style="height: 50px; padding: 0px" >
-                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/cobaupload">Upload Excel</a></div>
+                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/upload_excel/get/produksi">Upload Excel</a></div>
                 <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload <?php echo $nama; ?></div>
             </div>
             <div style="padding-top:30px" class="panel-body">
@@ -17,7 +17,7 @@ $this->load->view('page/header');
                 <div class="clearfix"></div>
                 <div class="page-tables">
                     <div class="table-responsive" style="; min-height: 200px;overflow-x: auto">
-                        <form method="post" action="<?php echo site_url('/data/savefromexceltokonsumsi') ?>">
+                        <form method="post" action="<?php echo site_url('/data/savefromexcelto').$table ?>">
                             <input type="hidden" name="filepath" value="<?php echo $filepath; ?>">
                             <input type='hidden' name='tanaman' value="<?php echo $jenis_data; ?>">
                             <div class="row">
@@ -33,20 +33,11 @@ $this->load->view('page/header');
                                 <thead>
                                 <tr>
                                     <th><input type="checkbox"  id="checkbox_check_semua" onclick="checkall(this)"/> </th>
-                                    <th>No</th>
-                                    <th>Nama Kecamatan</th>
-                                    <th>Jumlah Penduduk</th>
-                                    <th>Luas Panen</th>
-                                    <th>Provitas</th>
-                                    <th>Produksi</th>
-                                    <th>Konversi</th>
-                                    <th>Bibit</th>
-                                    <th>Pakan</th>
-                                    <th>Tercecer</th>
-                                    <th>Ketersediaan </th>
-                                    <th>Kebutuhan Konsumsi</th>
-                                    <th>Perimbangan</th>
-                                    <th>Ratio Ketersediaan</th>
+                                    <?php 
+                                        foreach($header as $row){
+                                            echo "<th>$row</th>"; 
+                                        }
+                                    ?>
                                 </tr>
                                 </thead>
                                 <tbody>

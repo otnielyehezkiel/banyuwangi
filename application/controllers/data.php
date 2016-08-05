@@ -130,7 +130,7 @@ class data extends admin_controller
     }
 
 
-    public function saveFromExcel($table)
+    public function saveFromExceltoProduksi($table)
     {
         $this->load->model("excelmodel");
         $this->load->model("mdata");
@@ -139,7 +139,7 @@ class data extends admin_controller
         $arr_data=$this->excelmodel->getExcelData($filepath);
         $waktu=date(date("Y-m-d",strtotime($this->input->post('waktu'))));
         $this->mdata->insertDataFromExcel($table,$arr_data['arr_data'],$checked_value,$waktu);
-        redirect(site_url().'/upload_konsumsi');
+        redirect(site_url().'/upload_excel/get/produksi');
     }
 
     public function saveFromExceltoKonsumsi()
@@ -150,13 +150,12 @@ class data extends admin_controller
         $filepath = $this->input->post('filepath');
         $checked_value = $this->input->post('row');
         $id_tanaman = $this->input->post('tanaman');
-         $waktu = date(date("Y-m-d",strtotime($this->input->post('waktu'))));
+        $waktu = date(date("Y-m-d",strtotime($this->input->post('waktu'))));
 
         $arr_data = $this->excelmodel->getExcelData($filepath);
        
         $result = $this->mdata->insertKonsumsi($id_tanaman,$arr_data['arr_data'],$checked_value,$waktu);
-        // echo $result;
-        redirect(site_url().'/upload_konsumsi');
+        redirect(site_url().'/upload_excel/get/konsumsi');
     }
 
     public function viewdata($table)

@@ -183,10 +183,10 @@
         <li class="has_sub ">
             <a><i class="fa fa-table"></i>Upload <span class="pull-right"><i class="fa fa-chevron-right"></i></span></a>
             <ul>
-                <li><a href="<?= site_url() ?>/cobaupload"><i class="fa fa-table"></i> Data Produksi</a></li>
+                <li><a href="<?= site_url() ?>/upload_excel/get/produksi"><i class="fa fa-table"></i> Data Produksi</a></li>
             </ul>
             <ul>
-                <li><a href="<?= site_url() ?>/upload_konsumsi"><i class="fa fa-table"></i> Data Konsumsi</a></li>
+                <li><a href="<?= site_url() ?>/upload_excel/get/konsumsi"><i class="fa fa-table"></i> Data Konsumsi</a></li>
             </ul>
             
         </li>
