@@ -18,13 +18,8 @@ td {
                             <div class="col-lg-12">
                                 <h2><?php echo $title ?></h2>
                                 <br>
-
-
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>

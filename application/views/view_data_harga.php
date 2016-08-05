@@ -1,26 +1,55 @@
 <?php
 $this->load->view('page/header');
 ?>
-
+<style>
+th { font-size: 12px; }
+td { 
+    font-size: 11px;
+    font-weight: normal; 
+}
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default" style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
                 <div class="panel-body">
-                     <form class="form-inline" id="form1">
+                  <div class="row">
+                            <div class="col-lg-12">
+                                <h2>Harga Bahan Pokok</h2>
+                                <br>
+                            </div>
+                </div>
+                     <form class="form-inline" id="form1" method="post" action="<?php echo site_url()?>/data/hargapasar" >
                         <div class="form-group">
                           <div class="row">
                             <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="tanggal">Tanggal:</label>
-                                <div class="input-group date" id='datetimepicker1'>
-                                <input type="text" class="form-control" id="tanggal" value="2016-08-04" >
+                                <div class="input-group date">
+                                <input type="date" class="form-control" name="tanggal" id="tanggal" value="<?php echo $tanggal ?>" >
                                  <span class="input-group-addon">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </span>
                                 </div>
                             </div>
                             </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label for="pasar">Pasar:</label>
+                                    <select class="form-control" name="pasar_id" id="pasar_id">
+                                        <?php
+                                            foreach ($pasar as $row) {
+                                                if($row['id'] == $defpasar){
+                                                    echo "<option value='". $row['id']. "' selected='selected' />".$row['nama']."</option>";
+                                                }
+                                                else echo "<option value='". $row['id']. "'/>".$row['nama']."</option>";
+                                            }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary" style="margin-top:4px"> Filter</button>
                           </div>  
                         </div>
                     </form>
@@ -42,32 +71,26 @@ $this->load->view('page/header');
                                 </tr>
                                 </thead>
                                 <tbody>
-                               <!--  <?php
-                                    if($table_data->num_rows>0)
+                                <?php
+                                    if(!empty($harga))
                                     {
                                         $no=0;
-                                        foreach ($table_data->result() as $val)
+                                        foreach ($harga as $val)
                                         {
+                                            $perubahan = $val['price'] - $val['price_yesterday'];
+                                            $persen = ($perubahan/$val['price_yesterday'])*100;
                                             $no++;
                                             echo "<tr>";
                                             echo "<td>$no</td>";
-                                            echo "<td>$val->nama_kabupaten</td>";
-                                            echo "<td>$val->nama_kecamatan</td>";
-                                            echo "<td>$val->nama_tanaman</td>";
-                                            echo "<td>$val->luas_panen</td>";
-                                            echo "<td>$val->produktivitas</td>";
-                                            echo "<td>$val->produksi</td>";
-                                            echo "<td>$val->bulan</td>";
-                                            echo "<td>$val->tahun</td>";
-                                            echo "<td>
-                                                    <a href=$link_edit$val->id_bahan_makanan><button class='btn btn-info'>Edit</button> </a>
-                                                    <a href=$link$val->id_bahan_makanan><button class='btn btn-danger'>Delete</button> </a>
-                                                        
-                                                    </td>";
-                                            echo "</tr>";
+                                            echo "<td>".$val['commodity_title']."</td>";
+                                            echo "<td>". $val['commodity_unit']."</td>";
+                                            echo "<td>". $val['price_yesterday']."</td>";
+                                            echo "<td>". $val['price']."</td>";
+                                            echo "<td>". $perubahan ."</td>";
+                                            echo "<td>". number_format((float)$persen, 2, '.', '')  ."</td>";
                                         }
                                     }
-                                ?> -->
+                                ?>
                                 </tbody>
                             </table>
                         </div>
@@ -83,17 +106,14 @@ $this->load->view('page/header');
 $this->load->view('page/footer');
 ?>
 
-
-
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         $($('.has_sub')[2]).addClass('open');
-        $('#example').DataTable();
-    });
+        $('#example').DataTable({
+            "pageLength": 20
 
-    $(function(){
-        $("#datetimepicker1").datetimepicker({
-            format: "DD-MM-YYYY"
         });
     });
+
+
 </script>

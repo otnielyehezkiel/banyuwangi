@@ -174,23 +174,63 @@ class data extends admin_controller
         $this->load->view('view_data_pertanian',$this->data);
     }
 
-    public function hargapasar(){
+    public function hargapasar()
+    {
         $username = 'admin';
         $password = '12345678';
-        
+        $pasar_id = 32; 
+        $today  = date("Y-m-d");
+
+        if($this->input->post("pasar_id") && $this->input->post("tanggal") ){
+            $pasar_id = $this->input->post("pasar_id");
+            $today = $this->input->post("tanggal");
+        }
+        // /die();
         $url = site_url().'/api/getpasar';
         $post = [
             'username' => $username,
             'password' => $password,
         ];
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $json = curl_exec($ch);
         $res = json_decode($json,true);
+
+        $url2 = site_url().'/api/getharga';
+        $post2 = [
+            'username' => $username,
+            'password' => $password,
+            'id_pasar' => $pasar_id,
+            'tanggal' => $today,
+        ];
+        $ch2 = curl_init();
+        curl_setopt($ch2, CURLOPT_URL, $url2);
+        curl_setopt($ch2, CURLOPT_POSTFIELDS, $post2);
+        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+        $json2 = curl_exec($ch2);
+        $res2 = json_decode($json2,true);
+        
         $data['pasar'] = $res['getpasar'];
+        $data['harga'] = $res2['getharga'];
+        $data['defpasar'] = $pasar_id;
+        $data['tanggal'] = $today;
+        // print_r($data); die();
         $this->load->view('view_data_harga',$data);
+    }
+
+    public function formtest()
+    {
+        $pasar_id = $this->input->post("pasar_id");
+        $today = $this->input->post('tanggal');
+        echo $pasar_id;
+        echo $today;
+        /*if($this->input->post("pasar_id") && $this->input->post("tanggal") ){
+            $pasar_id = $this->input->post("pasar_id");
+            $today = date('Y-m-d',$this->input->post("tanggal"));
+        }*/
     }
 
     public function hapus($table,$id)
