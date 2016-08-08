@@ -249,4 +249,9 @@ class data extends admin_controller
         }
 
     }
+
+    public function grafik()
+    {
+
+    }
 }

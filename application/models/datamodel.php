@@ -179,7 +179,6 @@ class datamodel extends CI_Model
             {
                 $data[$i]=array_values($res[$i]);
             }
-
             print json_encode($data);
         }
         else{

@@ -48,6 +48,12 @@ class pasarmodel extends CI_MODEL
 	{
 		$query = array();
 		foreach($data as $row){
+			if(is_null($row['price'])){
+				$row['price'] = 0;
+			}
+			if(is_null($row['price_yesterday'])){
+				$row['price_yesterday'] = 0;
+			}
 			$ins = array(
 				'id_commodity' => $row['commodity_id'],
 				'price' => $row['price'],

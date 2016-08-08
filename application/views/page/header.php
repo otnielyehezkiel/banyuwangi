@@ -228,6 +228,9 @@
             <ul>
                 <li><a href="<?= site_url() ?>/data/hargapasar"><i class="fa fa-table"></i> Bahan Pokok</a></li>
             </ul>
+            <ul>
+                <li><a href="<?= site_url() ?>/data/grafikharga"><i class="fa fa-table"></i> Grafik </a></li>
+            </ul>
         </li>
        
     </ul>
