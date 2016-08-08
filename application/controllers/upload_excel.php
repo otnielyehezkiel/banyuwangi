@@ -15,8 +15,11 @@ class Upload_excel extends admin_controller {
         
     }
     
-    public function get($jenis){
-        $this->load->view('initial_upload/view_upload_'.$jenis, $this->data);
+    public function get($jenis=0){
+        if($jenis){
+            $this->load->view('initial_upload/view_upload_'.$jenis, $this->data);
+        }  
+        else $this->load->view('initial_upload/view_upload_produksi', $this->data);
     }
 
     public function proses()

@@ -1,0 +1,70 @@
+<?php
+if (!defined('BASEPATH'))
+    exit('No direct script access allowed');
+
+class pasarmodel extends CI_MODEL
+{
+	public function insertData($table, $data)
+	{
+		$query = $this->db->insert_batch($table, $data);
+		return $query;
+	}
+
+	public function insertEach($table, $data)
+	{
+
+		foreach($data as $row){
+			
+		}
+		return $query;
+	}
+
+	public function isInserted($tanggal,$id_pasar)
+	{
+		$select_arr = array('commodity_unit', 'commodity_title', 'price', 'price_yesterday');
+		$this->db->select($select_arr);
+		$this->db->from('hargakonsumen h');
+		$this->db->join('commodity c', 'h.id_commodity = c.commodity_id');
+		$this->db->join('pasar p', 'p.id = h.id_pasar');
+		$this->db->where('h.tanggal',$tanggal);
+		$this->db->where('h.id_pasar',$id_pasar);
+		$query = $this->db->get();
+		
+		if($query->num_rows){
+			return $query->result_array();
+		}
+		else return false;
+	}
+
+	public function getData($table)
+	{
+		$this->db->select('*');
+		$this->db->from($table);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	public function insertPasar($tanggal,$id_pasar,$data)
+	{
+		$query = array();
+		foreach($data as $row){
+			$ins = array(
+				'id_commodity' => $row['commodity_id'],
+				'price' => $row['price'],
+				'price_yesterday' => $row['price_yesterday'],
+				'id_pasar' => $id_pasar,
+				'tanggal' => $tanggal
+			);
+			$query[] = $this->db->insert('hargakonsumen', $ins);
+		}
+		foreach ($query as $row) {
+            if($row === false){
+                return false;
+            }
+        }
+        return true;
+	}
+
+}
+
+?>

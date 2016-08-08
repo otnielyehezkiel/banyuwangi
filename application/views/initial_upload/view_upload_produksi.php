@@ -131,7 +131,7 @@ $this->load->view('page/footer');
         $('#pilihFile').on('change', function () {
 
         });
-        $($('.has_sub')[2]).addClass('open');
+        $($('.has_sub')[0]).addClass('open');
     });
     
     function resetFormUpload1() {

@@ -175,6 +175,8 @@ class data extends admin_controller
 
     public function hargapasar()
     {
+        $this->load->model('pasarmodel');
+
         $username = 'admin';
         $password = '12345678';
         $pasar_id = 32; 
@@ -184,35 +186,26 @@ class data extends admin_controller
             $pasar_id = $this->input->post("pasar_id");
             $today = $this->input->post("tanggal");
         }
-        // /die();
-        $url = site_url().'/api/getpasar';
+
+        $res = $this->pasarmodel->getData('pasar');
+       // var_dump($res); die();
+        $url = site_url().'/api/getharga';
         $post = [
-            'username' => $username,
-            'password' => $password,
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $json = curl_exec($ch);
-        $res = json_decode($json,true);
-
-        $url2 = site_url().'/api/getharga';
-        $post2 = [
             'username' => $username,
             'password' => $password,
             'id_pasar' => $pasar_id,
             'tanggal' => $today,
         ];
-        $ch2 = curl_init();
-        curl_setopt($ch2, CURLOPT_URL, $url2);
-        curl_setopt($ch2, CURLOPT_POSTFIELDS, $post2);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-        $json2 = curl_exec($ch2);
-        $res2 = json_decode($json2,true);
-        
-        $data['pasar'] = $res['getpasar'];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $json = curl_exec($ch);
+        $res2 = json_decode($json,true);
+
+        $data = array();
+
+        $data['pasar'] = $res;
         $data['harga'] = $res2['getharga'];
         $data['defpasar'] = $pasar_id;
         $data['tanggal'] = $today;

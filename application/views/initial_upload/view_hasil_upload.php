@@ -6,7 +6,7 @@ $this->load->view('page/header');
     <div style="margin-top:10px;" class="mainbox col-md-12">
         <div class="panel panel-info" >
             <div class="panel-heading" style="height: 50px; padding: 0px" >
-                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/upload_excel/get/produksi">Upload Excel</a></div>
+                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url() ?>/upload_excel/get">Upload Excel</a></div>
                 <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Hasil Upload <?php echo $nama; ?></div>
             </div>
             <div style="padding-top:30px" class="panel-body">

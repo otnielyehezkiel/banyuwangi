@@ -355,7 +355,7 @@ $this->load->view('page/footer');
 
 
     $(document).ready(function() {
-
+        $($('.has_sub')[2]).addClass('open');
         kabupaten();
         kecamatan();
         bulandata();

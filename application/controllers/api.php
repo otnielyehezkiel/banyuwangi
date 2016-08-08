@@ -389,6 +389,7 @@ class api extends CI_Controller
     /*Get data pasar di banyuwangi*/
     public function getPasar()
     {
+        $this->load->model('pasarmodel');
         $username=$this->input->post('username');
         $password=$this->input->post('password');
         $log=$this->login($username,$password);
@@ -396,6 +397,12 @@ class api extends CI_Controller
         if($log!=1)
         {
             print $log;
+            return;
+        }
+
+        if($this->pasarmodel->getData('pasar')){
+            $result['getpasar'] = $this->pasarmodel->getData('pasar');
+            echo json_encode($result);
             return;
         }
 
@@ -416,6 +423,8 @@ class api extends CI_Controller
                     );
                 }
             }
+            $result = $this->pasarmodel->insertData('pasar',$pasar['getpasar']);
+            if(!$result) echo "Insert Gagal!";
             echo json_encode($pasar);
         }
     }
@@ -423,6 +432,7 @@ class api extends CI_Controller
     /*Get data komoditas*/
     public function getKomoditas()
     {
+        $this->load->model('pasarmodel');
         $username=$this->input->post('username');
         $password=$this->input->post('password');
         $log=$this->login($username,$password);
@@ -433,14 +443,22 @@ class api extends CI_Controller
             return;
         }
 
+        if($this->pasarmodel->getData('commodity')){
+            $result['getkomoditas'] = $this->pasarmodel->getData('commodity');
+            echo json_encode($result);
+            return;
+        }
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($ch);
-        $res = json_decode($data);
-        if($res->success == 1){
-            $hasil['getkomoditas'] = $res->result;
+        $res = json_decode($data,true);
+        if($res['success'] == 1){
+            $hasil['getkomoditas'] = $res['result'];
+
+            $result = $this->pasarmodel->insertData('commodity',$hasil['getkomoditas']);
+            if(!$result) echo "Insert Gagal!";
             echo json_encode($hasil);
         }
     }
@@ -448,6 +466,7 @@ class api extends CI_Controller
      /*Get data harga from api*/
     public function getHarga()
     {
+        $this->load->model('pasarmodel');
         $username=$this->input->post('username');
         $password=$this->input->post('password');
         $log=$this->login($username,$password);
@@ -460,30 +479,19 @@ class api extends CI_Controller
 
         $tanggal = $this->input->post('tanggal');
         $id_pasar = $this->input->post('id_pasar');
+
+        if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
+            $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
+            echo json_encode($harga);
+            return;
+        }
+
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $data = curl_exec($ch);
         $res = json_decode($data,true);
-
-        $url2 = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getMasterCommodity";
-        $ch2 = curl_init();
-        curl_setopt($ch2, CURLOPT_URL, $url2);
-        curl_setopt($ch2, CURLOPT_RETURNTRANSFER, 1);
-        $data2 = curl_exec($ch2);
-        $res2 = json_decode($data2,true);
-        $komoditas = $res2['result'];
-
-        $kom = array();
-        foreach($komoditas as $row){
-            $id = $row['commodity_id'];
-            $kom[$id] = array(
-                'commodity_name' => $row['commodity_name'],
-                'commodity_unit' => $row['commodity_unit'],
-                'commodity_title' => $row['commodity_title']
-                ); 
-        }
 
         $prev_date = date('Y-m-d', strtotime($tanggal .' -1 day'));
 
@@ -499,7 +507,7 @@ class api extends CI_Controller
         $today = array();
         $yesterday = array();
 
-        if($res['success']==1 && $res3['success']==1){
+        if($res['success'] == 1 && $res3['success'] == 1){
             foreach($res['result'] as $row){
                 if($row['market_id'] == $id_pasar){
                     $harga['getharga'] = $row['details'];
@@ -514,11 +522,14 @@ class api extends CI_Controller
 
             foreach($harga['getharga'] as &$row) {
                 $id = $row['commodity_id'];
-                $row = array_merge($row, $kom[$id]);
                 $row = array_merge($row, array('price_yesterday' =>  $price_yes[$id]) );
             }
+            // echo json_encode($harga);
 
-            echo json_encode($harga);
+            $result = $this->pasarmodel->insertPasar($tanggal, $id_pasar, $harga['getharga']);
+            if(!$result) echo "Insert Gagal!";
+            $hasil['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
+            echo json_encode($hasil);
         }
     }
 
