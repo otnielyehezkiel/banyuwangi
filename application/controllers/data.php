@@ -250,8 +250,8 @@ class data extends admin_controller
 
     }
 
-    public function grafik()
+    public function grafikharga()
     {
-
+        $this->load->view('view_grafik_harga', $data);
     }
 }
