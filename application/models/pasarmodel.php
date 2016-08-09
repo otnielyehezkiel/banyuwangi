@@ -21,7 +21,7 @@ class pasarmodel extends CI_MODEL
 
 	public function isInserted($tanggal,$id_pasar)
 	{
-		$select_arr = array('commodity_unit', 'commodity_title', 'price', 'price_yesterday');
+		$select_arr = array('commodity_unit','c.commodity_id', 'commodity_name', 'commodity_title', 'price', 'price_yesterday');
 		$this->db->select($select_arr);
 		$this->db->from('hargakonsumen h');
 		$this->db->join('commodity c', 'h.id_commodity = c.commodity_id');
