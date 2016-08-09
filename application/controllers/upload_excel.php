@@ -54,4 +54,16 @@ class Upload_excel extends admin_controller {
         $this->load->view('initial_upload/view_hasil_upload',$this->data);
 
     }
+    
+    public function uploadproduksi()
+    {
+        $hasil=$this->proses();
+        $this->data["title"]="Hasil Upload";
+        $this->data["header"]=$hasil["header"];
+        $this->data["data_val"]=$hasil["arr_data"];
+        $this->data['nama'] = $this->input->post('namajenis');
+        $this->data['jenis_data']=$this->input->post('jenisdata');
+        $this->data['table']=$this->input->post('table');
+        $this->load->view('initial_upload/view_hasil_upload_produksi',$this->data);
+    }
 }

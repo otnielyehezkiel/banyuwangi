@@ -130,7 +130,7 @@ class data extends admin_controller
     }
 
 
-    public function saveFromExceltoProduksi($table)
+    public function saveFromExceltoProduksi()
     {
         $this->load->model("excelmodel");
         $this->load->model("mdata");
@@ -138,7 +138,26 @@ class data extends admin_controller
         $checked_value=$this->input->post('row');
         $arr_data=$this->excelmodel->getExcelData($filepath);
         $waktu=date(date("Y-m-d",strtotime($this->input->post('waktu'))));
-        $this->mdata->insertDataFromExcel($table,$arr_data['arr_data'],$checked_value,$waktu);
+        $id_kecamatan=$this->input->post('kecamatan');
+        $jenis_data=$this->input->post('jenis_data');
+
+        switch ($jenis_data)
+        {
+            case 1:
+                $table='bahan_makanan';
+                break;
+            case 2:
+                $table='sayur_sayuran';
+                break;
+            case 3:
+                $table='buah_buahan';
+                break;
+            case 4:
+                $table='tanaman_perkebunan';
+                break;
+        }
+        
+        $this->mdata->insertProduksi($table,$arr_data['arr_data'],$checked_value,$waktu,$id_kecamatan);
         redirect(site_url().'/upload_excel/get/produksi');
     }
 

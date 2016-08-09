@@ -6,14 +6,14 @@ $this->load->view('page/header');
         <div class="panel panel-info" >
             <div class="panel-heading" style="height: 50px; padding: 0px" >
                 <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; background-color: white; padding-top: 12px">Upload Excel</div>
-                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url()?>/upload_excel/hasilupload">Hasil Upload</a></div>
+                <div class="panel-title col-md-6 text-center" style="height: 100%; margin: 0px; padding-top: 12px"><a href="<?= site_url()?>/upload_excel/uploadproduksi">Hasil Upload</a></div>
             </div>     
             <div style="padding-top:30px" class="panel-body">
                 <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/upload_excel/hasilupload" method="post" >
+                <form id="uploadForm" class="form-horizontal" role="form" enctype="multipart/form-data" action="<?= site_url() ?>/upload_excel/uploadproduksi" method="post" >
                     <div style="margin-bottom: 25px" class="input-group">
                     <input type="hidden" name="namajenis" id="namajenis" value=""/>
-                    <input type="hidden" name="table" id="table" value="produksi/bahan_makanan"/>
+                    
                         <select name="jenisdata" class="form-control" onchange="changelinkname()" id="jenisdata">
                                 <option value="1">Produksi Tanaman Bahan Makanan</option>
                                 <option value="2">Produksi Sayur-sayuran</option>

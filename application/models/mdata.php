@@ -17,6 +17,7 @@ class mdata extends CI_MODEL
 
         $this->db->insert($table,$data);
     }
+
     public function insertDataFromExcel($table, $arr_data, $arr_check, $waktu)
     {
         $cek = array_filter($arr_check);
@@ -40,6 +41,45 @@ class mdata extends CI_MODEL
             else
             {
                 $query=$this->db->query("UPDATE bahan_makanan SET luas_panen=$val5,produktivitas=$val6,produksi=$val7 WHERE jenis_tanaman='$val[2]' and waktu='$waktu';");
+            }
+        }
+    }
+
+    public function insertProduksi($table, $arr_data, $arr_check, $waktu,$id_kecamatan)
+    {
+        $cek = array_filter($arr_check);
+
+        if (empty($cek)) {
+            return;
+        }
+
+        foreach ($arr_check as $index)
+        {
+            $index+=1;
+            $val= $arr_data[$index];
+            $cekada=$this->db->query("SELECT * from $table WHERE id_kecamatan='$id_kecamatan' and id_tanaman='$val[2]' and waktu='$waktu'");
+
+            $val5=str_replace(',','.',$val[4]);
+            $val6=str_replace(',','.',$val[5]);
+            $val7=str_replace(',','.',$val[6]);
+            if($cekada->num_rows()==0)
+            {
+                $data=array(
+                    'id_kabupaten'=>1,
+                    'id_tanaman'=>$val[2],
+                    'id_kecamatan'=>$id_kecamatan,
+                    'luas_panen'=>$val5,
+                    'produktivitas'=>$val6,
+                    'produksi'=>$val7,
+                    'waktu'=>$waktu
+                );
+
+                $this->db->insert($table,$data);
+//                $this->db->query("INSERT INTO $table VALUES(null, $val[2], $val[3], '$val[5]', $val5, $val6, $val7, '$waktu');");
+            }
+            else
+            {
+                $query=$this->db->query("UPDATE bahan_makanan SET luas_panen=$val5,produktivitas=$val6,produksi=$val7 WHERE id_tanaman='$val[2]' and waktu='$waktu';");
             }
         }
     }
