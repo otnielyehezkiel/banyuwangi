@@ -60,7 +60,6 @@ class api extends CI_Controller
 
     public function getdata($table)
     {
-
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $bulan = $this->input->post('bulan');

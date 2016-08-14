@@ -269,8 +269,26 @@ class data extends admin_controller
 
     }
 
-    public function grafikharga()
+    public function grafikHarga()
     {
+        $this->load->model('pasarmodel');
+        $pasar_id = 32;
+
+        if($this->input->post("pasar_id")){
+            $pasar_id = $this->input->post("pasar_id");
+        }
+
+        $res = $this->pasarmodel->getData('pasar');
+        $data['pasar'] = $res;
+        $data['def_pasar'] = $pasar_id;
+        $grafik = $this->pasarmodel->getGrafik($pasar_id);
+
+        if($this->input->is_ajax_request()){
+            echo $grafik;
+            return;
+        }
+
+        $data['grafik'] = json_decode($grafik,true);
         $this->load->view('view_grafik_harga', $data);
     }
 }

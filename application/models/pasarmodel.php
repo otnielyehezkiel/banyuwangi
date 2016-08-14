@@ -71,6 +71,20 @@ class pasarmodel extends CI_MODEL
         return true;
 	}
 
+	public function getGrafik($id_pasar)
+	{
+		$this->db->select("commodity_name, price");
+		$this->db->select("DATE_FORMAT(tanggal, '%d/%m/%Y') AS date", FALSE);
+		$this->db->from('hargakonsumen h');
+		$this->db->join('commodity c', 'h.id_commodity = c.commodity_id');
+		$this->db->where('id_pasar',$id_pasar);
+		$this->db->where('tanggal >= DATE_SUB(NOW(), INTERVAL 30 day)');
+		$this->db->order_by('id_commodity, tanggal');
+		$query = $this->db->get();
+
+		return json_encode($query->result_array());
+	}
+
 }
 
 ?>
