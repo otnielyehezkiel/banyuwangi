@@ -302,8 +302,45 @@ class api extends CI_Controller
             return;
         }
     }
+    /*Api untuk registrasi akun*/
+    public function registrasi(){
+        $username = $this->input->post('username');
+        $email = $this->input->post('email');
+        $nama = $this->input->post('nama');
+        $no_hp = $this->input->post('no_hp');
+        $alamat = $this->input->post('alamat');
+        $password = $this->input->post('password');
+        $role = 1;
+        if($this->input->post('role')){
+            $role = $this->input->post('role');
+        }
+        $query = $this->db->query('select * from users_mobile where username="'.$username.'"');
 
-    public function registrasi(){}
+        if($query->result()){
+            $hasil['registrasi'] = 'Username sudah ada'; 
+            echo json_encode($hasil);
+        }
+        else {
+            $arr = array(
+                    'username' => $username,
+                    'nama' => $nama,
+                    'email' => $no_hp,
+                    'alamat' => $alamat,
+                    'password' => md5($password)
+                );
+            $this->db->insert('users_mobile',$arr);
+            $id_res = $this->db->insert_id();
+            $res2 = $this->db->insert('mobile_user_mapping',
+                        array(
+                            'id_user' => $id_res,
+                            'id_role' => $role)
+                    );
+            if($res2){
+                $hasil['registrasi'] = 'Berhasil';
+                echo json_encode($hasil);
+            }
+        }
+    }
 
     public function getallkegiatan()
     {
