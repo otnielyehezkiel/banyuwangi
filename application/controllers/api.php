@@ -58,6 +58,67 @@ class api extends CI_Controller
         print json_encode($map);
     }
 
+    /*Api untuk registrasi akun*/
+    public function registrasi(){
+        $username = $this->input->post('username');
+        $email = $this->input->post('email');
+        $nama = $this->input->post('nama');
+        $no_hp = $this->input->post('no_hp');
+        $alamat = $this->input->post('alamat');
+        $password = $this->input->post('password');
+        $role = 1; //default role 'admin', jika role 'user' maka $role = 2.
+        if($this->input->post('role')){
+            $role = $this->input->post('role');
+        }
+        $query = $this->db->query('select * from users_mobile where username="'.$username.'"');
+
+        if($query->result()){
+            $hasil['registrasi'] = 'Username sudah ada'; 
+            echo json_encode($hasil);
+        }
+        else {
+            $arr = array(
+                    'username' => $username,
+                    'nama' => $nama,
+                    'email' => $no_hp,
+                    'alamat' => $alamat,
+                    'password' => password_hash($password, PASSWORD_DEFAULT)
+                );
+            $this->db->insert('users_mobile',$arr);
+            $id_res = $this->db->insert_id();
+            $res2 = $this->db->insert('mobile_user_mapping',
+                        array(
+                            'id_user' => $id_res,
+                            'id_role' => $role)
+                    );
+            if($res2){
+                $hasil['registrasi'] = 'Berhasil';
+                echo json_encode($hasil);
+            }
+        }
+    }
+    /*Mengganti Password*/
+    public function changePassword(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+
+        $log = $this->login($username, $password);
+
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $password_baru = $this->input->post('password_baru');
+        $data = array(
+                'password' => md5($password_baru)
+            );
+        $this->db->where('username', $username);
+        $query = $this->db->update('users_mobile', $data);
+
+    }
+
     public function getdata($table)
     {
         $username = $this->input->post('username');
@@ -300,45 +361,6 @@ class api extends CI_Controller
         {
             print $log;
             return;
-        }
-    }
-    /*Api untuk registrasi akun*/
-    public function registrasi(){
-        $username = $this->input->post('username');
-        $email = $this->input->post('email');
-        $nama = $this->input->post('nama');
-        $no_hp = $this->input->post('no_hp');
-        $alamat = $this->input->post('alamat');
-        $password = $this->input->post('password');
-        $role = 1;
-        if($this->input->post('role')){
-            $role = $this->input->post('role');
-        }
-        $query = $this->db->query('select * from users_mobile where username="'.$username.'"');
-
-        if($query->result()){
-            $hasil['registrasi'] = 'Username sudah ada'; 
-            echo json_encode($hasil);
-        }
-        else {
-            $arr = array(
-                    'username' => $username,
-                    'nama' => $nama,
-                    'email' => $no_hp,
-                    'alamat' => $alamat,
-                    'password' => md5($password)
-                );
-            $this->db->insert('users_mobile',$arr);
-            $id_res = $this->db->insert_id();
-            $res2 = $this->db->insert('mobile_user_mapping',
-                        array(
-                            'id_user' => $id_res,
-                            'id_role' => $role)
-                    );
-            if($res2){
-                $hasil['registrasi'] = 'Berhasil';
-                echo json_encode($hasil);
-            }
         }
     }
 
