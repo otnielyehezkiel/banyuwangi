@@ -101,21 +101,96 @@ class api extends CI_Controller
     public function changePassword(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
+        $password_baru = $this->input->post('password_baru');
 
         $log = $this->login($username, $password);
 
         if($log!=1)
         {
-            print $log;
+            $hasil['changepass'] = 'Gagal';
+            echo json_encode($hasil);
             return;
         }
 
-        $password_baru = $this->input->post('password_baru');
+        
         $data = array(
-                'password' => md5($password_baru)
+                'password' => password_hash($password_baru, PASSWORD_DEFAULT)
             );
         $this->db->where('username', $username);
         $query = $this->db->update('users_mobile', $data);
+
+        if($query){
+            $hasil['changepass'] = 'Berhasil';
+            echo json_encode($hasil);
+        }
+        else {
+            $hasil['changepass'] = 'Gagal';
+            echo json_encode($hasil);
+        }
+    }
+
+    function get_random_password($chars_min=6, $chars_max=8, $use_upper_case=false, $include_numbers=false, $include_special_chars=false)
+    {
+        $length = rand($chars_min, $chars_max);
+        $selection = 'aeuoyibcdfghjklmnpqrstvwxz';
+        if($include_numbers) {
+            $selection .= "1234567890";
+        }
+        if($include_special_chars) {
+            $selection .= "!@\"#$%&[]{}?|";
+        }
+
+        $password = "";
+        for($i=0; $i<$length; $i++) {
+            $current_letter = $use_upper_case ? (rand(0,1) ? strtoupper($selection[(rand() % strlen($selection))]) : $selection[(rand() % strlen($selection))]) : $selection[(rand() % strlen($selection))];            
+            $password .=  $current_letter;
+        }                
+
+      return $password;
+    }
+
+    public function forgotPass(){
+        
+        $username = $this->input->post('username');
+        $email = $this->input->post('email');
+
+        $config['smtp_host'] = 'ssl://smtp.googlemail.com';
+        $config['protocol'] = 'smtp';
+        $config['mailtype'] = 'html';
+        $config['wordwrap'] = TRUE;
+        $config['smtp_user'] = 'cs.ngooyakk@gmail.com';
+        $config['smtp_pass'] = 'ngooyakkmotor';
+        $config['smtp_port'] = 465;
+        $this->load->library('email', $config);        
+        $this->email->set_newline("\r\n");
+
+        $check = $this->db->query('select * from users_mobile where username="'.$username.'"');
+
+        if(!$check->result()){
+            $res['forgotpass'] = 'Username Tidak ada';
+            echo json_encode($res);
+            return;
+        }
+
+        $new_pass = $this->get_random_password();
+        $data = array('password' => password_hash($new_pass, PASSWORD_DEFAULT));
+        $this->db->where('username', $username);
+        $query = $this->db->update('users_mobile', $data);
+
+        $this->email->from('cs.ngooyakk@gmail.com', 'banyuwangi apps');
+        $this->email->to($email);
+        $this->email->subject('Lupa Password'); 
+        $this->email->message('Password baru anda sekarang adalah: '.$new_pass.'<br> <i> Pastikan Anda mengganti password Anda setelah login. <i>'); 
+
+        if($this->email->send() && $query){
+            $res['forgotpass'] = 'Berhasil';
+            echo json_encode($res);
+        }
+        else {
+            $res['forgotpass'] = 'Gagal';
+            echo json_encode($res);
+        }
+
 
     }
 
