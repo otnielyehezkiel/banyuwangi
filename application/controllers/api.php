@@ -5,11 +5,13 @@ if (!defined('BASEPATH'))
 
 class api extends CI_Controller
 {
+
     private function login($username,$password)
     {
         $this->db->select('password');
         $this->db->from('users_mobile');
         $this->db->where('username',$username);
+        $this->db->where('status', 1);
 
         $query=$this->db->get();
 
@@ -59,7 +61,8 @@ class api extends CI_Controller
     }
 
     /*Api untuk registrasi akun*/
-    public function registrasi(){
+    public function registrasi()
+    {
         $username = $this->input->post('username');
         $email = $this->input->post('email');
         $nama = $this->input->post('nama');
@@ -70,20 +73,45 @@ class api extends CI_Controller
         if($this->input->post('role')){
             $role = $this->input->post('role');
         }
-        $query = $this->db->query('select * from users_mobile where username="'.$username.'"');
+        $query = $this->db->query('select * from users_mobile where username="'.$username.'" or email="'.$email.'"');
 
         if($query->result()){
-            $hasil['registrasi'] = 'Username sudah ada'; 
+            $hasil['registrasi'] = 'Username atau Email sudah digunakan'; 
             echo json_encode($hasil);
         }
         else {
             $arr = array(
                     'username' => $username,
                     'nama' => $nama,
-                    'email' => $no_hp,
+                    'no_hp' => $no_hp,
+                    'email' => $email,
                     'alamat' => $alamat,
-                    'password' => password_hash($password, PASSWORD_DEFAULT)
+                    'password' => password_hash($password, PASSWORD_DEFAULT),
+                    'status' => 0  // status = 0 maka user blm diverifikasi
                 );
+
+            /* Sent email to user*/
+            $config['smtp_host'] = 'ssl://smtp.googlemail.com';
+            $config['protocol'] = 'smtp';
+            $config['mailtype'] = 'html';
+            $config['wordwrap'] = TRUE;
+            $config['smtp_user'] = 'cs.ngooyakk@gmail.com';
+            $config['smtp_pass'] = 'ngooyakkmotor';
+            $config['smtp_port'] = 465;
+            $this->load->library('email', $config);        
+            $this->email->set_newline("\r\n");
+
+            $this->email->from('cs.ngooyakk@gmail.com', 'banyuwangi apps');
+            $this->email->to($email);
+            $this->email->subject('Verifikasi Email'); 
+            $this->email->message( "
+                    <html>
+                    Terimakasih Telah Mendaftar,".$nama.".
+                    Silahkan klik link dibawah ini untuk melakukan verifikasi email
+                    <a href='".site_url('api/verify')."/".md5($email)."'> Klik Disini </a>
+                    </html>
+                "); 
+
             $this->db->insert('users_mobile',$arr);
             $id_res = $this->db->insert_id();
             $res2 = $this->db->insert('mobile_user_mapping',
@@ -91,11 +119,31 @@ class api extends CI_Controller
                             'id_user' => $id_res,
                             'id_role' => $role)
                     );
-            if($res2){
-                $hasil['registrasi'] = 'Berhasil';
+            if($res2 && $this->email->send()){
+                $hasil['registrasi'] = 'Berhasil, Silahkan Verifikasi Email';
+                echo json_encode($hasil);
+            } else {
+                $hasil['registrasi'] = 'Gagal';
                 echo json_encode($hasil);
             }
         }
+    }
+
+    public function verify($key)
+    {
+        $this->db->select('*');
+        $this->db->from('users_mobile');
+        $this->db->where('md5(email)',$key);
+        $query = $this->db->get();
+        if($query->result()){
+            $this->db->where('md5(email)',$key);
+            $q_update = $this->db->update('users_mobile',array('status'=>1));
+            echo "Verifikasi Berhasil";
+        } else {
+            echo "Verifikasi Gagal!";
+        }
+        
+
     }
     /*Mengganti Password*/
     public function changePassword(){
