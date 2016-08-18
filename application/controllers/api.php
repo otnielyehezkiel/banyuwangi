@@ -94,7 +94,6 @@ class api extends CI_Controller
             $config['smtp_host'] = 'ssl://smtp.googlemail.com';
             $config['protocol'] = 'smtp';
             $config['mailtype'] = 'html';
-            $config['wordwrap'] = TRUE;
             $config['smtp_user'] = 'cs.ngooyakk@gmail.com';
             $config['smtp_pass'] = 'ngooyakkmotor';
             $config['smtp_port'] = 465;
@@ -104,12 +103,9 @@ class api extends CI_Controller
             $this->email->from('cs.ngooyakk@gmail.com', 'banyuwangi apps');
             $this->email->to($email);
             $this->email->subject('Verifikasi Email'); 
-            $this->email->message( "
-                    <html>
-                    Terimakasih Telah Mendaftar,".$nama.".
+            $this->email->message( "Terimakasih Telah Mendaftar,".$nama.".
                     Silahkan klik link dibawah ini untuk melakukan verifikasi email
                     <a href='".site_url('api/verify')."/".md5($email)."'> Klik Disini </a>
-                    </html>
                 "); 
 
             $this->db->insert('users_mobile',$arr);
