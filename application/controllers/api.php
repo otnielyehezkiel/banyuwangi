@@ -164,10 +164,10 @@ class api extends CI_Controller
         $this->load->library('email', $config);        
         $this->email->set_newline("\r\n");
 
-        $check = $this->db->query('select * from users_mobile where username="'.$username.'"');
+        $check = $this->db->query('select * from users_mobile where username="'.$username.'" and email="'.$email.'"');
 
         if(!$check->result()){
-            $res['forgotpass'] = 'Username Tidak ada';
+            $res['forgotpass'] = 'Username dan Email tidak sama';
             echo json_encode($res);
             return;
         }
