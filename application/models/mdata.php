@@ -79,7 +79,7 @@ class mdata extends CI_MODEL
             }
             else
             {
-                $query=$this->db->query("UPDATE bahan_makanan SET luas_panen=$val5,produktivitas=$val6,produksi=$val7 WHERE id_tanaman='$val[2]' and waktu='$waktu';");
+                $query=$this->db->query("UPDATE bahan_makanan SET luas_panen='$val5',produktivitas=$val6,produksi='$val7' WHERE id_tanaman='$val[2]' and waktu='$waktu';");
             }
         }
     }
