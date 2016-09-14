@@ -60,6 +60,25 @@ class api extends CI_Controller
         print json_encode($map);
     }
 
+    public function profile()
+    {
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+
+        $log=$this->login($username,$password);
+
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $query = $this->db->query("SELECT nama, email, alamat, no_hp FROM users_mobile where username='$username'");
+        $res = $query->result();
+        $hasil['profile'] = $res;
+        echo json_encode($hasil);
+    }
+
     /*Api untuk registrasi akun*/
     public function registrasi()
     {
@@ -208,10 +227,10 @@ class api extends CI_Controller
         $this->load->library('email', $config);        
         $this->email->set_newline("\r\n");
 
-        $check = $this->db->query('select * from users_mobile where username="'.$username.'" and email="'.$email.'"');
+        $check = $this->db->query('select * from users_mobile where username="'.$username.'" and email="'.$email.'" ');
 
         if(!$check->result()){
-            $res['forgotpass'] = 'Username dan Email tidak sama';
+            $res['forgotpass'] = 'Username atau Email tidak terdaftar';
             echo json_encode($res);
             return;
         }
