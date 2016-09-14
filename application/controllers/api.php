@@ -792,6 +792,178 @@ class api extends CI_Controller
         echo json_encode($rows);
     }
 
+    public function getAllPost(){
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $this->db->select('*');
+        $this->db->from('post_mobile');
+        $this->db->from('status',0);
+
+        $query = $this->db->get();
+        $rows['getallpost'] = $query->result_array();
+        echo json_encode($rows);
+
+    }
+
+    public function getPost(){
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+        $id_post=$this->input->post('id_post');
+
+        $this->db->select('*');
+        $this->db->from('post_mobile');
+        $this->db->where('id_post', $id_post);
+
+        $query = $this->db->get();
+        $rows['getpost'] = $query->result_array();
+        echo json_encode($rows);
+    }
+
+    public function getComment(){
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+        $id_post = $this->input->post('id_post');
+
+        $this->db->select('*');
+        $this->db->from('comment_mobile');
+        $this->db->where('id_post', $id_post);
+        $this->db->where('status', 0);
+        $query = $this->db->get();
+        $rows['getcomment'] = $query->result_array();
+        echo json_encode($rows);
+    }
+
+    public function addPost(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+        $isi = $this->input->post('isi');
+        $created_at = $this->input->post('created_at');
+        $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
+        $res = $query->result();
+        $id_user = $res[0]->id_user;
+
+        $data = array(
+            'id_user' => $id_user,
+            'created_at' => $created_at,
+            'isi' => $isi,
+            'status' => 0
+        );
+
+        $res = $this->db->insert('post_mobile', $data);
+        if($res) {
+            $rows['addpost'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['addpost'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
+
+    public function addComment(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+
+        $isi = $this->input->post('isi');
+        $created_at = $this->input->post('created_at');
+        $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
+        $res = $query->result();
+        $id_user = $res[0]->id_user;
+        $id_post = $this->input->post('id_post');
+        $data = array(
+            'id_user' => $id_user,
+            'id_post' => $id_post,
+            'created_at' => $created_at,
+            'isi' => $isi,
+            'status' => 0
+        );
+
+        $res = $this->db->insert('comment_mobile', $data);
+        if($res) {
+            $rows['addcomment'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['addcomment'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
+
+    public function deleteComment(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+        $id_comment = $this->input->post('id_comment');
+        $this->db->where('id_comment',$id_comment);
+        $delete = $this->db->update('comment_mobile',array('status'=>1));
+
+        if($delete){
+            $rows['deletecomment'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['deletecomment'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
+
+    public function deletePost(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+        $id_post = $this->input->post('id_post');
+        $this->db->where('id_post',$id_post);
+        $delete = $this->db->update('post_mobile',array('status'=>1));
+
+        if($delete){
+            $rows['deletepost'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['deletepost'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
+
+
+
 
 
 
