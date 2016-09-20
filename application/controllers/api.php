@@ -824,6 +824,7 @@ class api extends CI_Controller
         $this->db->select('*');
         $this->db->from('post_mobile');
         $this->db->from('status',0);
+        $this->db->order_by('created_at', 'DESC');
 
         $query = $this->db->get();
         $rows['getallpost'] = $query->result_array();
@@ -866,6 +867,8 @@ class api extends CI_Controller
         $this->db->from('comment_mobile');
         $this->db->where('id_post', $id_post);
         $this->db->where('status', 0);
+        $this->db->order_by('created_at', 'DESC');
+        
         $query = $this->db->get();
         $rows['getcomment'] = $query->result_array();
         echo json_encode($rows);
@@ -881,14 +884,13 @@ class api extends CI_Controller
             return;
         }
         $isi = $this->input->post('isi');
-        $created_at = $this->input->post('created_at');
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
         $res = $query->result();
         $id_user = $res[0]->id_user;
 
         $data = array(
             'id_user' => $id_user,
-            'created_at' => $created_at,
+            'created_at' => date('Y-m-d H:i:s'),
             'isi' => $isi,
             'status' => 0
         );
@@ -914,7 +916,6 @@ class api extends CI_Controller
         }
 
         $isi = $this->input->post('isi');
-        $created_at = $this->input->post('created_at');
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
         $res = $query->result();
         $id_user = $res[0]->id_user;
@@ -922,7 +923,7 @@ class api extends CI_Controller
         $data = array(
             'id_user' => $id_user,
             'id_post' => $id_post,
-            'created_at' => $created_at,
+            'created_at' => date('Y-m-d H:i:s'),
             'isi' => $isi,
             'status' => 0
         );
@@ -963,14 +964,13 @@ class api extends CI_Controller
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $log = $this->login($username,$password);
-        if($log != 1)
-        {
+        if($log != 1){
             print $log;
             return;
         }
         $id_post = $this->input->post('id_post');
         $this->db->where('id_post',$id_post);
-        $delete = $this->db->update('post_mobile',array('status'=>1));
+        $delete = $this->db->update('post_mobile', array('status'=>1));
 
         if($delete){
             $rows['deletepost'] = "Berhasil"; 
@@ -981,10 +981,55 @@ class api extends CI_Controller
         }
     }
 
+    public function editPost(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1){
+            print $log;
+            return;
+        }
+        $id_post = $this->input->post('id_post');
+        $isi = $this->input->post('isi');
+        $this->db->where('id_post',$id_post);
+        $delete = $this->db->update('post_mobile',  
+                        array(
+                            'isi' => $isi,
+                            'created_at' => date('Y-m-d H:i:s')
+                        ));
 
+        if($delete){
+            $rows['editpost'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['editpost'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
 
+    public function editComment{
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1){
+            print $log;
+            return;
+        }
+        $id_comment = $this->input->post('id_comment');
+        $isi = $this->input->post('isi');
+        $this->db->where('id_comment',$id_comment);
+        $delete = $this->db->update('comment_mobile', 
+                        array(
+                            'isi' => $isi,
+                            'created_at' => date('Y-m-d H:i:s')
+                        ));
 
-
-
-
+        if($delete){
+            $rows['editcomment'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['editcomment'] = "Gagal"; 
+            echo json_encode($rows);
+        }
+    }
 }
