@@ -823,7 +823,7 @@ class api extends CI_Controller
 
         $this->db->select('*');
         $this->db->from('post_mobile');
-        $this->db->from('status',0);
+        $this->db->where('status',0);
         $this->db->order_by('created_at', 'DESC');
 
         $query = $this->db->get();
