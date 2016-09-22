@@ -1007,7 +1007,7 @@ class api extends CI_Controller
         }
     }
 
-    public function editComment{
+    public function editComment(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
         $log = $this->login($username,$password);
@@ -1018,7 +1018,7 @@ class api extends CI_Controller
         $id_comment = $this->input->post('id_comment');
         $isi = $this->input->post('isi');
         $this->db->where('id_comment',$id_comment);
-        $delete = $this->db->update('comment_mobile', 
+        $delete = $this->db->update('comment_mobile',  
                         array(
                             'isi' => $isi,
                             'created_at' => date('Y-m-d H:i:s')
@@ -1032,4 +1032,5 @@ class api extends CI_Controller
             echo json_encode($rows);
         }
     }
+
 }
