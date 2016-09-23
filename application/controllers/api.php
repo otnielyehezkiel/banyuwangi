@@ -821,9 +821,10 @@ class api extends CI_Controller
             return;
         }
 
-        $this->db->select('*');
-        $this->db->from('post_mobile');
-        $this->db->where('status',0);
+        $this->db->select('p.*, u.nama');
+        $this->db->from('post_mobile p');
+        $this->db->join('users_mobile u', 'u.id_user = p.id_user');
+        $this->db->where('p.status',0);
         $this->db->order_by('created_at', 'DESC');
 
         $query = $this->db->get();
@@ -843,9 +844,10 @@ class api extends CI_Controller
         }
         $id_post=$this->input->post('id_post');
 
-        $this->db->select('*');
-        $this->db->from('post_mobile');
-        $this->db->where('id_post', $id_post);
+        $this->db->select('p.*, u.nama');
+        $this->db->from('post_mobile p');
+        $this->db->join('users_mobile u', 'u.id_user = p.id_user');
+        $this->db->where('p.id_post', $id_post);
 
         $query = $this->db->get();
         $rows['getpost'] = $query->result_array();
@@ -863,10 +865,11 @@ class api extends CI_Controller
         }
         $id_post = $this->input->post('id_post');
 
-        $this->db->select('*');
-        $this->db->from('comment_mobile');
-        $this->db->where('id_post', $id_post);
-        $this->db->where('status', 0);
+        $this->db->select('c.*, u.nama');
+        $this->db->from('comment_mobile c');
+        $this->db->join('users_mobile u', 'c.id_user = u.id_user');
+        $this->db->where('c.id_post', $id_post);
+        $this->db->where('c.status', 0);
         $this->db->order_by('created_at', 'DESC');
         
         $query = $this->db->get();
