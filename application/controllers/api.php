@@ -144,6 +144,42 @@ class api extends CI_Controller
         }
     }
 
+    public function editProfile(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+        $nama = $this->input->post('nama');
+        $no_hp = $this->input->post('no_hp');
+        $alamat = $this->input->post('alamat');
+        $email = $this->input->post('email');
+
+        $data = array(
+                'password' => $nama,
+                'no_hp' => $no_hp,
+                'alamat' => $alamat,
+                'email' => $email
+            );
+
+        $this->db->where('username', $username);
+        $query = $this->db->update('users_mobile', $data);
+
+        if($query){
+            $hasil['editProfile'] = 'Berhasil';
+            echo json_encode($hasil);
+        }
+        else {
+            $hasil['editProfile'] = 'Gagal';
+            echo json_encode($hasil);
+        }
+
+
+    }
+
     public function verify($key)
     {
         $this->db->select('*');
