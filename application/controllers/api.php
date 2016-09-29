@@ -786,7 +786,7 @@ class api extends CI_Controller
         $tanggal = '2016-08-08';
         $id_pasar = 32;
 
-        if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
+        if($this->pasarmodel->wonokromo($tanggal, $id_pasar)){
             $harga['getharga'] = $this->pasarmodel->wonokromo($tanggal, $id_pasar);
             echo json_encode($harga);
             return;
