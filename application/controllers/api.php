@@ -765,6 +765,21 @@ class api extends CI_Controller
         }
     }
 
+    public function getPasarWonokromo()
+    {
+        $this->load->model('pasarmodel');
+
+        $tanggal = '2016-08-08';
+        $id_pasar = 32;
+
+        if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
+            $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
+            echo json_encode($harga);
+            return;
+        }
+
+    }
+
     /* get Detail Ketersediaan dari jenis tanaman di seluruh kecamatan*/
     public function getDetailKetersediaan()
     {
