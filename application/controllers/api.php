@@ -783,14 +783,11 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        $tanggal = '2016-08-29';
+        $tanggal = '2016-08-10';
         $id_pasar = 32;
-
-        if($this->pasarmodel->wonokromo($tanggal, $id_pasar)){
-            $harga['getharga'] = $this->pasarmodel->wonokromo($tanggal, $id_pasar);
-            echo json_encode($harga);
-            return;
-        }
+        $harga['getharga'] = $this->pasarmodel->wonokromo($tanggal, $id_pasar);
+        echo json_encode($harga);            
+        
     }
 
     /* get Detail Ketersediaan dari jenis tanaman di seluruh kecamatan*/
