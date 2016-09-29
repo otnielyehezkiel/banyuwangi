@@ -39,12 +39,14 @@ class pasarmodel extends CI_MODEL
 	public function wonokromo($tanggal,$id_pasar)
 	{
 		$select_arr = array('commodity_unit','c.commodity_id', 'commodity_name', 'commodity_title', 'price', 'price_yesterday');
+		$this->db->select("DATE_FORMAT(tanggal, '%d/%m/%Y') AS date", FALSE);
 		$this->db->select($select_arr);
 		$this->db->from('hargakonsumen h');
 		$this->db->join('commodity c', 'h.id_commodity = c.commodity_id');
 		$this->db->join('pasar p', 'p.id = h.id_pasar');
-		$this->db->where("h.tanggal  >= DATE_SUB('2016-08-10', INTERVAL 7 day)");
+		$this->db->where("h.tanggal  >= DATE_SUB('2016-08-16', INTERVAL 7 day)");
 		$this->db->where('h.id_pasar',$id_pasar);
+		$this->db->order_by('tanggal, id_commodity');
 		$query = $this->db->get();
 		return $query->result_array();
 	}
