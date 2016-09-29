@@ -159,7 +159,7 @@ class api extends CI_Controller
         $email = $this->input->post('email');
 
         $data = array(
-                'password' => $nama,
+                'nama' => $nama,
                 'no_hp' => $no_hp,
                 'alamat' => $alamat,
                 'email' => $email
