@@ -648,7 +648,7 @@ class api extends CI_Controller
         $pasar['getpasar'] = array();
         if($res['success'] == 1){
             foreach ($res['result'] as $row) {
-                if($row['kabkota_id'] == 6){ // id kabupaten banyuwangi = 6
+                if($row['kabkota_id'] == 6 || $row['kabkota_id'] == 1){ // id kabupaten banyuwangi = 6
                     $pasar['getpasar'][] = array(
                         'id' => $row['market_id'],
                         'nama' => $row['market_name']
@@ -768,14 +768,69 @@ class api extends CI_Controller
     public function getPasarWonokromo()
     {
         $this->load->model('pasarmodel');
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
 
-        $tanggal = '2016-08-08';
-        $id_pasar = 32;
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $tanggal = $this->input->post('tanggal');
+        $id_pasar = $this->input->post('id_pasar');
 
         if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
             $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
             echo json_encode($harga);
             return;
+        }
+
+
+        $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $data = curl_exec($ch);
+        $res = json_decode($data,true);
+
+        $prev_date = date('Y-m-d', strtotime($tanggal .' -1 day'));
+
+        $url3 = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$prev_date;
+        $ch3 = curl_init();
+        curl_setopt($ch3, CURLOPT_URL, $url3);
+        curl_setopt($ch3, CURLOPT_RETURNTRANSFER, 1);
+        $data3 = curl_exec($ch3);
+        $res3 = json_decode($data3,true);
+
+        $harga = array();
+        $harga['getharga'] = array();
+        $today = array();
+        $yesterday = array();
+
+        if($res['success'] == 1 && $res3['success'] == 1){
+            foreach($res['result'] as $row){
+                if($row['market_id'] == $id_pasar){
+                    $harga['getharga'] = $row['details'];
+                }
+            }
+            foreach($res3['result'] as $row1){
+                if($row1['market_id'] == $id_pasar){
+                    $kemarin = $row1['details'] ;
+                }
+            }
+            $price_yes = array_column($kemarin, 'price', 'commodity_id');
+
+            foreach($harga['getharga'] as &$row) {
+                $id = $row['commodity_id'];
+                $row = array_merge($row, array('price_yesterday' =>  $price_yes[$id]) );
+            }
+
+            $result = $this->pasarmodel->insertPasar($tanggal, $id_pasar, $harga['getharga']);
+            if(!$result) echo "Insert Gagal!";
+            $hasil['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
+            echo json_encode($hasil);
         }
     }
 
@@ -783,8 +838,8 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        $tanggal = '2016-08-10';
-        $id_pasar = 32;
+        $tanggal = '2016-09-28';
+        $id_pasar = 2;
         $harga['getharga'] = $this->pasarmodel->wonokromo($tanggal, $id_pasar);
         echo json_encode($harga);            
         
@@ -882,10 +937,12 @@ class api extends CI_Controller
             return;
         }
 
-        $this->db->select('p.*, u.nama');
+        $this->db->select('p.*, u.nama, count(c.id_post) as total_comment');
         $this->db->from('post_mobile p');
         $this->db->join('users_mobile u', 'u.id_user = p.id_user');
+        $this->db->join('comment_mobile c','c.id_post = p.id_post');
         $this->db->where('p.status',0);
+        $this->db->group_by('c.id_post');
         $this->db->order_by('created_at', 'DESC');
 
         $query = $this->db->get();
