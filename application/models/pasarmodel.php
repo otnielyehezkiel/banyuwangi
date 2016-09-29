@@ -43,7 +43,7 @@ class pasarmodel extends CI_MODEL
 		$this->db->from('hargakonsumen h');
 		$this->db->join('commodity c', 'h.id_commodity = c.commodity_id');
 		$this->db->join('pasar p', 'p.id = h.id_pasar');
-		$this->db->where('h.tanggal BETWEEN DATE_SUB('.$tanggal.', INTERVAL 7 DAY) AND '.$tanggal);
+		$this->db->where('h.tanggal  >= DATE_SUB('.$tanggal.', INTERVAL 7 day)');
 		$this->db->where('h.id_pasar',$id_pasar);
 		$query = $this->db->get();
 		
