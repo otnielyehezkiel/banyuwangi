@@ -783,7 +783,7 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        $tanggal = '2016-08-08';
+        $tanggal = '2016-08-29';
         $id_pasar = 32;
 
         if($this->pasarmodel->wonokromo($tanggal, $id_pasar)){
