@@ -768,9 +768,18 @@ class api extends CI_Controller
     public function getPasarWonokromo()
     {
         $this->load->model('pasarmodel');
+        $username=$this->input->post('username');
+        $password=$this->input->post('password');
+        $log=$this->login($username,$password);
 
-        $tanggal = '2016-09-30';
-        $id_pasar = 2;
+        if($log!=1)
+        {
+            print $log;
+            return;
+        }
+
+        $tanggal = $this->input->post('tanggal');
+        $id_pasar = $this->input->post('id_pasar');
 
         if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
             $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
