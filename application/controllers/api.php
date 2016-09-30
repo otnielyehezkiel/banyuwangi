@@ -768,18 +768,9 @@ class api extends CI_Controller
     public function getPasarWonokromo()
     {
         $this->load->model('pasarmodel');
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
 
-        if($log!=1)
-        {
-            print $log;
-            return;
-        }
-
-        $tanggal = $this->input->post('tanggal');
-        $id_pasar = $this->input->post('id_pasar');
+        $tanggal = '2016-09-30';
+        $id_pasar = 2;
 
         if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
             $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
@@ -838,7 +829,7 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        $tanggal = '2016-09-28';
+        $tanggal = '2016-09-30';
         $id_pasar = 2;
         $harga['getharga'] = $this->pasarmodel->wonokromo($tanggal, $id_pasar);
         echo json_encode($harga);            
