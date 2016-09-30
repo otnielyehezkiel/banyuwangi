@@ -29,10 +29,7 @@ class pasarmodel extends CI_MODEL
 		$this->db->where('h.tanggal',$tanggal);
 		$this->db->where('h.id_pasar',$id_pasar);
 		$query = $this->db->get();
-		if($query->num_rows){
-			return $query->result_array();
-		}
-		else return false;
+		return $query->result_array();
 	}
 
 	public function wonokromo($tanggal,$id_pasar)
