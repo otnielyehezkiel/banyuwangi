@@ -540,15 +540,15 @@ class api extends CI_Controller
 
     public function getallkegiatan()
     {
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
+        // $username=$this->input->post('username');
+        // $password=$this->input->post('password');
+        // $log=$this->login($username,$password);
 
-        if($log!=1)
-        {
-            print $log;
-            return;
-        }
+        // if($log!=1)
+        // {
+        //     print $log;
+        //     return;
+        // }
 
         $query=$this->db->query("SELECT al.foto, al.keterangan,al.tanggal, um.username 
                                 from aktifitas_lapangan al, users_mobile um 
@@ -919,14 +919,14 @@ class api extends CI_Controller
     }
 
     public function getAllPost(){
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
-        if($log!=1)
-        {
-            print $log;
-            return;
-        }
+        // $username=$this->input->post('username');
+        // $password=$this->input->post('password');
+        // $log=$this->login($username,$password);
+        // if($log!=1)
+        // {
+        //     print $log;
+        //     return;
+        // }
 
         $this->db->select('p.*, u.nama, count(c.id_post) as total_comment');
         $this->db->from('post_mobile p');
@@ -943,14 +943,14 @@ class api extends CI_Controller
     }
 
     public function getPost(){
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
-        if($log!=1)
-        {
-            print $log;
-            return;
-        }
+        // $username=$this->input->post('username');
+        // $password=$this->input->post('password');
+        // $log=$this->login($username,$password);
+        // if($log!=1)
+        // {
+        //     print $log;
+        //     return;
+        // }
         $id_post=$this->input->post('id_post');
 
         $this->db->select('p.*, u.nama');
@@ -964,14 +964,14 @@ class api extends CI_Controller
     }
 
     public function getComment(){
-        $username=$this->input->post('username');
-        $password=$this->input->post('password');
-        $log=$this->login($username,$password);
-        if($log!=1)
-        {
-            print $log;
-            return;
-        }
+        // $username=$this->input->post('username');
+        // $password=$this->input->post('password');
+        // $log=$this->login($username,$password);
+        // if($log!=1)
+        // {
+        //     print $log;
+        //     return;
+        // }
         $id_post = $this->input->post('id_post');
 
         $this->db->select('c.*, u.nama');
