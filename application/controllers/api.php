@@ -911,62 +911,51 @@ class api extends CI_Controller
     }
 
     public function getAllPost(){
-        // $username=$this->input->post('username');
-        // $password=$this->input->post('password');
-        // $log=$this->login($username,$password);
-        // if($log!=1)
-        // {
-        //     print $log;
-        //     return;
-        // }
 
-        $this->db->select('p.*, u.nama, count(c.id_post) as total_comment');
+        $this->db->select('p.*, u.nama');
         $this->db->from('post_mobile p');
         $this->db->join('users_mobile u', 'u.id_user = p.id_user');
-        $this->db->join('comment_mobile c','c.id_post = p.id_post');
         $this->db->where('p.status',0);
-        $this->db->group_by('c.id_post');
         $this->db->order_by('created_at', 'DESC');
 
         $query = $this->db->get();
-        $rows['getallpost'] = $query->result_array();
+        $hasil = $query->result_array();
+        foreach ($hasil as &$row) {
+            $this->db->select('count(1) as total_comment');
+            $this->db->from('comment_mobile');
+            $this->db->where('id_post', $row['id_post']);
+            $q = $this->db->get();
+            $count = $q->result_array();
+            $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
+        }
+        $rows['getallpost'] = $hasil;
         echo json_encode($rows);
-
     }
 
     public function getPost(){
-        // $username=$this->input->post('username');
-        // $password=$this->input->post('password');
-        // $log=$this->login($username,$password);
-        // if($log!=1)
-        // {
-        //     print $log;
-        //     return;
-        // }
-        $id_post=$this->input->post('id_post');
+        $id_post = $this->input->post('id_post');
 
-        $this->db->select('p.*, u.nama, count(c.id_post) as total_comment');
+        $this->db->select('p.*, u.nama');
         $this->db->from('post_mobile p');
         $this->db->join('users_mobile u', 'u.id_user = p.id_user');
-        $this->db->join('comment_mobile c','c.id_post = p.id_post');
         $this->db->where('p.id_post', $id_post);
-
         $query = $this->db->get();
-        $rows['getpost'] = $query->result_array();
+        $hasil = $query->result_array();
+        foreach ($hasil as &$row) {
+            $this->db->select('count(1) as total_comment');
+            $this->db->from('comment_mobile');
+            $this->db->where('id_post', $row['id_post']);
+            $q = $this->db->get();
+            $count = $q->result_array();
+            $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
+        }
+        $rows['getpost'] = $hasil;
         echo json_encode($rows);
     }
 
     public function getComment(){
-        // $username=$this->input->post('username');
-        // $password=$this->input->post('password');
-        // $log=$this->login($username,$password);
-        // if($log!=1)
-        // {
-        //     print $log;
-        //     return;
-        // }
-        $id_post = $this->input->post('id_post');
 
+        $id_post = $this->input->post('id_post');
         $this->db->select('c.*, u.nama');
         $this->db->from('comment_mobile c');
         $this->db->join('users_mobile u', 'c.id_user = u.id_user');
