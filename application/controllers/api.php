@@ -953,9 +953,10 @@ class api extends CI_Controller
         }
         $id_post=$this->input->post('id_post');
 
-        $this->db->select('p.*, u.nama');
+        $this->db->select('p.*, u.nama, count(c.id_post) as total_comment');
         $this->db->from('post_mobile p');
         $this->db->join('users_mobile u', 'u.id_user = p.id_user');
+        $this->db->join('comment_mobile c','c.id_post = p.id_post');
         $this->db->where('p.id_post', $id_post);
 
         $query = $this->db->get();
