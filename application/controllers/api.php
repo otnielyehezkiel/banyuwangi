@@ -413,14 +413,6 @@ class api extends CI_Controller
             return;
         }
 
-        $auth=$this->mapuser($id_user);
-        //var_dump($auth);
-        if($auth[0]['nama_role']!="admin")
-        {
-            print '6';
-            return;
-        }
-
         $data=array(
             'foto'=>$fotopath,
             'id_user'=>$id_user,
