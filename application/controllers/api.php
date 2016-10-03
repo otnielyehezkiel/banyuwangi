@@ -442,7 +442,7 @@ class api extends CI_Controller
         $id_post = $this->input->post('id_post');
         $data = array(
             'id_user' => $id_user,
-            'id_post' => $id_post,
+            'id_aktifitas' => $id_post,
             'created_at' => date('Y-m-d H:i:s'),
             'isi' => $isi,
             'status' => 0
@@ -592,7 +592,7 @@ class api extends CI_Controller
         foreach ($hasil as &$row) {
             $this->db->select('count(1) as total_comment');
             $this->db->from('comment_mobile');
-            $this->db->where('id_post', $row['id_aktifitas_lapangan']);
+            $this->db->where('id_aktifitas_lapangan', $row['id_aktifitas_lapangan']);
             $q = $this->db->get();
             $count = $q->result_array();
             $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
@@ -1032,6 +1032,7 @@ class api extends CI_Controller
             return;
         }
         $isi = $this->input->post('isi');
+
         $foto = $this->input->post('foto');
         $fotopath = "http://198.71.80.189:8081/uploads/".$foto;
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
