@@ -686,6 +686,10 @@ class api extends CI_Controller
             echo json_encode($hasil);
         }
     }
+    public function ramadhanrp()
+    {
+        echo "ramadhanrp";
+    }
 
      /*Get data harga from api*/
     public function getHarga()
@@ -694,7 +698,7 @@ class api extends CI_Controller
         $username=$this->input->post('username');
         $password=$this->input->post('password');
         $log=$this->login($username,$password);
-
+        
         if($log!=1)
         {
             print $log;
@@ -709,7 +713,7 @@ class api extends CI_Controller
             echo json_encode($harga);
             return;
         }
-
+        
         $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
