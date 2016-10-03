@@ -557,6 +557,63 @@ class api extends CI_Controller
         echo json_encode($res);
     }
 
+    public function getBulanProduksi(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $nama_tanaman = 0;
+        if($this->input->post('tanaman') != null){
+            $nama_tanaman = $this->input->post('tanaman');
+        }
+        $log = $this->login($username,$password);
+
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
+
+        $tanaman = array(
+                'Padi Sawah',
+                'Padi Ladang',
+                'Jagung',
+                'Kedelai',
+                'Kacang Tanah',
+                'Kacang Hijau',
+                'Ubi Kayu',
+                'Ubi Jalar'                
+            );
+
+        $hasil = array();
+        // print_r($nama_tanaman); die();
+        if($nama_tanaman){
+            $query = $this->db->query("
+                        SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan 
+                        FROM bahan_makanan b, jenis_tanaman j
+                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$nama_tanaman. "'
+                        GROUP BY bulan
+                    ");
+            
+            $hasil = $query->result();
+        }
+        else {
+            foreach ($tanaman as $row) {
+                $query = $this->db->query("
+                        SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan 
+                        FROM bahan_makanan b, jenis_tanaman j
+                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$row. "'
+                        GROUP BY bulan
+                    ");
+                $hasil[$row] = $query->result();
+            }
+        }
+        
+
+        $res['getbulanproduksi'] = $hasil;
+
+        echo json_encode($res);
+    }
+
+
     public function detailGetTahunProduksi(){
         $username = $this->input->post('username');
         $password = $this->input->post('password');
@@ -1200,6 +1257,7 @@ class api extends CI_Controller
         }
     }
 
+
     public function getHargaPerBulan()
     {
         $this->load->model('pasarmodel');
@@ -1221,5 +1279,29 @@ class api extends CI_Controller
 
         $data['gethargaperbulan'] = json_decode($grafik,true);
         $this->load->view('view_grafik_harga', $data);
+    }
+    public function do_upload()
+    {
+        $this->load->library('upload');
+        $username = $this->input->post('username');
+        $nmfile = $username.".jpg";
+        $config['upload_path'] = './uploads/profiles'; //path folder
+        $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
+        $config['file_ext'] = '.jpg';
+        $config['overwrite'] = true;
+        $config['file_name'] = $nmfile;
+        $this->upload->initialize($config);
+        if($_FILES['foto']['name'])
+        {
+            if ($this->upload->do_upload('foto'))
+            {
+                $gbr = $this->upload->data();
+                echo "berhasil";
+            }
+            else {
+                $error = $this->upload->display_errors();
+                echo "$error";
+            }
+        }
     }
 }
