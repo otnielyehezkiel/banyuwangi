@@ -101,6 +101,7 @@ class pasarmodel extends CI_MODEL
 
 	public function getHargaBulanan($id_pasar,$id_commodity)
 	{
+
 		$this->db->select("price,tanggal");
 		//$this->db->select("DATE_FORMAT(tanggal, '%d/%m/%Y') AS date");
 		$this->db->from('hargakonsumen');
