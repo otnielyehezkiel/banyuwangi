@@ -458,6 +458,21 @@ class api extends CI_Controller
         }
     }
 
+    public function getCommentKegiatan(){
+
+        $id_post = $this->input->post('id_post');
+        $this->db->select('c.*, u.nama');
+        $this->db->from('comment_mobile c');
+        $this->db->join('users_mobile u', 'c.id_user = u.id_user');
+        $this->db->where('c.id_post', $id_post);
+        $this->db->where('c.status', 0);
+        $this->db->order_by('created_at', 'DESC');
+        
+        $query = $this->db->get();
+        $rows['getcomment'] = $query->result_array();
+        echo json_encode($rows);
+    }
+
     /* Get All Data */
     public function getalldata()
     {
@@ -1183,5 +1198,28 @@ class api extends CI_Controller
             $rows['editcomment'] = "Gagal"; 
             echo json_encode($rows);
         }
+    }
+
+    public function getHargaPerBulan()
+    {
+        $this->load->model('pasarmodel');
+
+        if($this->input->post("pasar_id")){
+            $pasar_id = $this->input->post("pasar_id");
+        }
+        $id_commodity = $this->input->post("id_commodity");
+
+        $res = $this->pasarmodel->getData('pasar');
+        $data['pasar'] = $res;
+        $data['def_pasar'] = $pasar_id;
+        $grafik = $this->pasarmodel->getHargaBulanan($pasar_id, $id_commodity);
+
+        if($this->input->is_ajax_request()){
+            echo $grafik;
+            return;
+        }
+
+        $data['gethargaperbulan'] = json_decode($grafik,true);
+        $this->load->view('view_grafik_harga', $data);
     }
 }

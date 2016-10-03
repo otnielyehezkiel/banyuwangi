@@ -291,4 +291,7 @@ class data extends admin_controller
         $data['grafik'] = json_decode($grafik,true);
         $this->load->view('view_grafik_harga', $data);
     }
+
+    
+
 }
