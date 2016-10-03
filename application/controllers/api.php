@@ -1262,8 +1262,8 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        if($this->input->post("pasar_id")){
-            $pasar_id = $this->input->post("pasar_id");
+        if($this->input->post("id_pasar")){
+            $pasar_id = $this->input->post("id_pasar");
         }
         $id_commodity = $this->input->post("id_commodity");
 
