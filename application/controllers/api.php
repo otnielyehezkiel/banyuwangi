@@ -1267,9 +1267,6 @@ class api extends CI_Controller
         }
         $id_commodity = $this->input->post("id_commodity");
 
-        $res = $this->pasarmodel->getData('pasar');
-        $data['pasar'] = $res;
-        $data['def_pasar'] = $pasar_id;
         $grafik = $this->pasarmodel->getHargaBulanan($pasar_id, $id_commodity);
 
         $data['gethargaperbulan'] = $grafik;
