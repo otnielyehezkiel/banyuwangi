@@ -416,7 +416,7 @@ class api extends CI_Controller
         $data=array(
             'foto'=>$fotopath,
             'id_user'=>$id_user,
-            'tanggal'=>date("Y-m-d"),
+            'tanggal' => date('Y-m-d H:i:s'),
             'keterangan'=>$keterangan
         );
 
@@ -425,9 +425,37 @@ class api extends CI_Controller
         print 1;
     }
 
-    function getkegiatan()
-    {
+    public function commentKegiatan(){
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        $log = $this->login($username,$password);
+        if($log != 1)
+        {
+            print $log;
+            return;
+        }
 
+        $isi = $this->input->post('isi');
+        $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
+        $res = $query->result();
+        $id_user = $res[0]->id_user;
+        $id_post = $this->input->post('id_post');
+        $data = array(
+            'id_user' => $id_user,
+            'id_post' => $id_post,
+            'created_at' => date('Y-m-d H:i:s'),
+            'isi' => $isi,
+            'status' => 0
+        );
+
+        $res = $this->db->insert('aktifitas_comment', $data);
+        if($res) {
+            $rows['commentkegiatan'] = "Berhasil"; 
+            echo json_encode($rows);
+        } else {
+            $rows['commentkegiatan'] = "Gagal"; 
+            echo json_encode($rows);
+        }
     }
 
     /* Get All Data */
@@ -532,25 +560,45 @@ class api extends CI_Controller
 
     public function getallkegiatan()
     {
-        // $username=$this->input->post('username');
-        // $password=$this->input->post('password');
-        // $log=$this->login($username,$password);
-
-        // if($log!=1)
-        // {
-        //     print $log;
-        //     return;
-        // }
-
-        $query=$this->db->query("SELECT al.foto, al.keterangan,al.tanggal, um.username 
+        $query = $this->db->query("SELECT al.id_aktifitas_lapangan, al.foto, al.keterangan,al.tanggal, um.username 
                                 from aktifitas_lapangan al, users_mobile um 
                                 where um.id_user=al.id_user
                                 order by al.tanggal DESC;
                             ");
 
-        $data["kegiatan"]=$query->result_array();
+        $hasil = $query->result_array();
+        foreach ($hasil as &$row) {
+            $this->db->select('count(1) as total_comment');
+            $this->db->from('aktifitas_comment');
+            $this->db->where('id_aktifitas', $row['id_aktifitas_lapangan']);
+            $q = $this->db->get();
+            $count = $q->result_array();
+            $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
+        }
+        $data["kegiatan"] = $hasil;
 
         print json_encode($data);
+    }
+
+    public function getkegiatan(){
+        $id_post = $this->input->post('id_aktifitas_lapangan');
+
+        $this->db->select('a.*, u.nama');
+        $this->db->from('aktifitas_lapangan a');
+        $this->db->join('users_mobile u', 'u.id_user = a.id_user');
+        $this->db->where('a.id_aktifitas_lapangan', $id_post);
+        $query = $this->db->get();
+        $hasil = $query->result_array();
+        foreach ($hasil as &$row) {
+            $this->db->select('count(1) as total_comment');
+            $this->db->from('comment_mobile');
+            $this->db->where('id_post', $row['id_aktifitas_lapangan']);
+            $q = $this->db->get();
+            $count = $q->result_array();
+            $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
+        }
+        $rows['getkegiatan'] = $hasil;
+        echo json_encode($rows);
     }
 
     public function getketersedian()
@@ -914,6 +962,8 @@ class api extends CI_Controller
         echo json_encode($rows);
     }
 
+    
+
     public function getAllPost(){
 
         $this->db->select('p.*, u.nama');
@@ -982,6 +1032,8 @@ class api extends CI_Controller
             return;
         }
         $isi = $this->input->post('isi');
+        $foto = $this->input->post('foto');
+        $fotopath = "http://198.71.80.189:8081/uploads/".$foto;
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
         $res = $query->result();
         $id_user = $res[0]->id_user;
@@ -990,7 +1042,8 @@ class api extends CI_Controller
             'id_user' => $id_user,
             'created_at' => date('Y-m-d H:i:s'),
             'isi' => $isi,
-            'status' => 0
+            'status' => 0,
+            'fot0' => $fotopath
         );
 
         $res = $this->db->insert('post_mobile', $data);
