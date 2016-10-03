@@ -1272,13 +1272,8 @@ class api extends CI_Controller
         $data['def_pasar'] = $pasar_id;
         $grafik = $this->pasarmodel->getHargaBulanan($pasar_id, $id_commodity);
 
-        if($this->input->is_ajax_request()){
-            echo $grafik;
-            return;
-        }
-
-        $data['gethargaperbulan'] = json_decode($grafik,true);
-        $this->load->view('view_grafik_harga', $data);
+        $data['gethargaperbulan'] = $grafik;
+        echo json_encode($data);
     }
     public function do_upload()
     {
