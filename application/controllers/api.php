@@ -591,8 +591,8 @@ class api extends CI_Controller
         $hasil = $query->result_array();
         foreach ($hasil as &$row) {
             $this->db->select('count(1) as total_comment');
-            $this->db->from('comment_mobile');
-            $this->db->where('id_aktifitas_lapangan', $row['id_aktifitas_lapangan']);
+            $this->db->from('aktifitas_comment');
+            $this->db->where('id_aktifitas', $row['id_aktifitas_lapangan']);
             $q = $this->db->get();
             $count = $q->result_array();
             $row = array_merge($row, array('total_comment' =>  $count[0]['total_comment']) );
