@@ -1107,7 +1107,7 @@ class api extends CI_Controller
         $fotopath = "";
         if($this->input->post('foto') != null){
             $foto = $this->input->post('foto');
-            $fotopath = "http://198.71.80.189:8081/uploads/".$foto; 
+            $fotopath = "http://198.71.80.189:8081/uploads/".$foto." | "; 
         }
         
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
@@ -1119,7 +1119,7 @@ class api extends CI_Controller
             'created_at' => date('Y-m-d H:i:s'),
             'isi' => $isi,
             'status' => 0,
-            'fot0' => $fotopath
+            'foto' => $fotopath
         );
 
         $res = $this->db->insert('post_mobile', $data);
