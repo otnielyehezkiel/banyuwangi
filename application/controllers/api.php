@@ -1104,9 +1104,12 @@ class api extends CI_Controller
             return;
         }
         $isi = $this->input->post('isi');
-
-        $foto = $this->input->post('foto');
-        $fotopath = "http://198.71.80.189:8081/uploads/".$foto;
+        $fotopath = "";
+        if($this->input->post('foto') != null){
+            $foto = $this->input->post('foto');
+            $fotopath = "http://198.71.80.189:8081/uploads/".$foto; 
+        }
+        
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
         $res = $query->result();
         $id_user = $res[0]->id_user;
@@ -1257,7 +1260,6 @@ class api extends CI_Controller
         }
     }
 
-
     public function getHargaPerBulan()
     {
         $this->load->model('pasarmodel');
@@ -1272,6 +1274,7 @@ class api extends CI_Controller
         $data['gethargaperbulan'] = $grafik;
         echo json_encode($data);
     }
+
     public function do_upload()
     {
         $this->load->library('upload');
