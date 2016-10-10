@@ -102,7 +102,7 @@ class data extends admin_controller
             return;
         }
 
-        $this->session->set_userdata('jenis_data',"Jagung");
+        $this->session->set_userdata('jenis_data',"Padi Sawah");
         $col = array('Kabupaten', 'Kecamatan', 'Jenis Tanaman','Jumlah Penduduk', 'Luas Panen', 'Produktivitas', 'Produksi', 'Konversi', 'Bibit', 'Pakan', 'Tercecer', 'Ketersediaan', 'Kebutuhan Konsumsi Riil', 'Perimbangan', 'Rasio Ketersediaan', 'Tahun Data'
                 );
         $data['title'] = "Data Konsumsi dan Ketersediaan";

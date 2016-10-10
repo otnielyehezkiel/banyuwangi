@@ -86,6 +86,7 @@ $this->load->view('page/footer');
         display: none;
     }
 </style>
+
 <script>
     function checkall(source)
     {
