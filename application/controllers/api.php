@@ -31,9 +31,53 @@ class api extends CI_Controller
 
     }
 
+    public function info_geo()
+    {
+        $jenis_produk=$this->input->post('jenis_produk');
+        $id_kecamatan=$this->input->post('id_kecamatan');
+        $id_tanaman=$this->input->post('id_tanaman');
+        $year_month=$this->input->post('year_month');
+        if($id_kecamatan==25)
+            $query=$this->db->query("SELECT * FROM kecamatan where id_kecamatan<>'25';");
+        else
+            $query=$this->db->query("SELECT * FROM kecamatan where id_kecamatan=$id_kecamatan AND id_kecamatan<>'25';");
+        $daftar_polygon = array();
+        foreach ($query->result() as $key) {
+            $query3=$this->db->query("SELECT SUM(produksi) as produksi_total FROM $jenis_produk where id_kecamatan=$key->id_kecamatan AND  id_tanaman=$id_tanaman AND SUBSTRING(waktu,1,7)='$year_month';");
+            $res3=$query3->result();
+            $query4=$this->db->query("SELECT AVG(luas_panen) as luas_panen_avg FROM $jenis_produk where id_kecamatan=$key->id_kecamatan AND  id_tanaman=$id_tanaman AND SUBSTRING(waktu,1,7)='$year_month';");
+            $res4=$query4->result();
+            $query5=$this->db->query("SELECT AVG(produktivitas) as produktivitas_avg FROM $jenis_produk where id_kecamatan=$key->id_kecamatan AND  id_tanaman=$id_tanaman AND SUBSTRING(waktu,1,7)='$year_month';");
+            $res5=$query5->result();
+            $produksi = 0;
+            if($res3[0]->produksi_total!=null)
+                $produksi = $res3[0]->produksi_total;
+            $data_kecamatan= array(
+                    'id_kecamatan' => $key->id_kecamatan,
+                    'nama_kecamatan' => $key->nama_kecamatan,
+                    'luas_panen' => $res4[0]->luas_panen_avg,
+                    'produktivitas' => $res5[0]->produktivitas_avg,
+                    'produksi_total' => $produksi,
+                    'polygon' => $key->polygon);
+            array_push($daftar_polygon,$data_kecamatan);
+        }
+        $query2=$this->db->query("SELECT MAX(produksi_total) AS produksi_max, MIN(produksi_total) AS produksi_min
+                                    FROM
+                                    (SELECT id_kecamatan,SUM(produksi) AS produksi_total
+                                    FROM $jenis_produk
+                                    WHERE SUBSTRING(waktu,1,7)='$year_month'
+                                    AND id_tanaman=$id_tanaman
+                                    GROUP BY id_kecamatan) AS T");
+        $res2=$query2->result();
+        $hasil['produksi_max'] = $res2[0]->produksi_max;
+        $hasil['produksi_min'] = $res2[0]->produksi_min;
+        $hasil['data_kecamatan'] = $daftar_polygon;        
+        echo json_encode($hasil);
+    }
+
     private function mapuser($id_user)
     {
-        $query=$this->db->query("SELECT mr.nama_role, mr.id_role, um.nama, um.email, um.no_hp, um.alamat FROM users_mobile um, mobile_user_mapping mm, mobile_user_role mr where um.id_user=$id_user and mm.id_user=um.id_user and mr.id_role=mm.id_role;");
+        $query=$this->db->query("SELECT um.id_user,um.username ,mr.nama_role, mr.id_role, um.nama, um.email, um.no_hp, um.alamat FROM users_mobile um, mobile_user_mapping mm, mobile_user_role mr where um.id_user=$id_user and mm.id_user=um.id_user and mr.id_role=mm.id_role;");
         $res=$query->result_array();
 
         return $res;
@@ -299,7 +343,7 @@ class api extends CI_Controller
         $password = $this->input->post('password');
         $bulan = $this->input->post('bulan');
         $tahun = $this->input->post('tahun');
-        $kode_kecamatan = $this->input->post('kecamatan');
+        $id_kecamatan = $this->input->post('kecamatan');
         $waktu= $tahun.'-'.$bulan. '-01';
 
         $log = $this->login($username,$password);
@@ -311,15 +355,15 @@ class api extends CI_Controller
         }
 
 
-        if($kode_kecamatan!=52500)
+        if($id_kecamatan!=25)
         {
-            $query = $this->db->query("SELECT id_kecamatan from kecamatan where kode_kecamatan='$kode_kecamatan';");
+            $query = $this->db->query("SELECT id_kecamatan from kecamatan where id_kecamatan='$id_kecamatan';");
             $query = $query->result();
             $id_kecamatan=$query[0]->id_kecamatan;
         }
 
         $arr_select=array("luas_panen","produktivitas","produksi");
-        if($kode_kecamatan==52500)
+        if($id_kecamatan==25)
         {
             $field=$this->db->list_fields($table);
 
@@ -329,6 +373,7 @@ class api extends CI_Controller
             }
             $this->db->group_by('j.nama_tanaman');
             $this->db->select('j.nama_tanaman');
+            $this->db->select('j.id_tanaman');
             $this->db->select($table.'.'.$field[0]);
             $this->db->select($table.'.'.$field[1]);
             $this->db->select($table.'.'.$field[2]);
@@ -502,114 +547,26 @@ class api extends CI_Controller
     }
 
     public function getTahunProduksi(){
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        $nama_tanaman = 0;
-        if($this->input->post('tanaman') != null){
-            $nama_tanaman = $this->input->post('tanaman');
-        }
-        $log = $this->login($username,$password);
-
-        if($log != 1)
-        {
-            print $log;
-            return;
-        }
-
-        $tanaman = array(
-                'Padi Sawah',
-                'Padi Ladang',
-                'Jagung',
-                'Kedelai',
-                'Kacang Tanah',
-                'Kacang Hijau',
-                'Ubi Kayu',
-                'Ubi Jalar'                
-            );
-
-        $hasil = array();
-        // print_r($nama_tanaman); die();
-        if($nama_tanaman){
-            $query = $this->db->query("
-                        SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun 
-                        FROM bahan_makanan b, jenis_tanaman j
-                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$nama_tanaman. "'
-                        GROUP BY tahun
-                    ");
-            
-            $hasil = $query->result();
-        }
-        else {
-            foreach ($tanaman as $row) {
-                $query = $this->db->query("
-                        SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun 
-                        FROM bahan_makanan b, jenis_tanaman j
-                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$row. "'
-                        GROUP BY tahun
-                    ");
-                $hasil[$row] = $query->result();
-            }
-        }
-        
-
-        $res['gettahunproduksi'] = $hasil;
-
+        $id_tanaman = $this->input->post('id_tanaman');
+        $id_kecamatan = $this->input->post('id_kecamatan');
+        $jenis_produk = $this->input->post('jenis_produk');
+        if($id_kecamatan==25)
+            $query = $this->db->query("SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun FROM $jenis_produk where id_tanaman = $id_tanaman  GROUP BY tahun");
+        else
+            $query = $this->db->query("SELECT EXTRACT(year FROM waktu) as tahun, SUM(produksi) as produksi_tahun FROM $jenis_produk where id_tanaman = $id_tanaman AND id_kecamatan = $id_kecamatan GROUP BY tahun");
+        $res['produksi_pertahun'] = $query->result();
         echo json_encode($res);
     }
 
     public function getBulanProduksi(){
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        $nama_tanaman = 0;
-        if($this->input->post('tanaman') != null){
-            $nama_tanaman = $this->input->post('tanaman');
-        }
-        $log = $this->login($username,$password);
-
-        if($log != 1)
-        {
-            print $log;
-            return;
-        }
-
-        $tanaman = array(
-                'Padi Sawah',
-                'Padi Ladang',
-                'Jagung',
-                'Kedelai',
-                'Kacang Tanah',
-                'Kacang Hijau',
-                'Ubi Kayu',
-                'Ubi Jalar'                
-            );
-
-        $hasil = array();
-        // print_r($nama_tanaman); die();
-        if($nama_tanaman){
-            $query = $this->db->query("
-                        SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan 
-                        FROM bahan_makanan b, jenis_tanaman j
-                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$nama_tanaman. "'
-                        GROUP BY bulan
-                    ");
-            
-            $hasil = $query->result();
-        }
-        else {
-            foreach ($tanaman as $row) {
-                $query = $this->db->query("
-                        SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan 
-                        FROM bahan_makanan b, jenis_tanaman j
-                        where b.id_tanaman = j.id_tanaman and j.nama_tanaman = '".$row. "'
-                        GROUP BY bulan
-                    ");
-                $hasil[$row] = $query->result();
-            }
-        }
-        
-
-        $res['getbulanproduksi'] = $hasil;
-
+        $id_tanaman = $this->input->post('id_tanaman');
+        $id_kecamatan = $this->input->post('id_kecamatan');
+        $jenis_produk = $this->input->post('jenis_produk');
+        if($id_kecamatan==25)
+            $query = $this->db->query("SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan FROM $jenis_produk where id_tanaman = $id_tanaman  GROUP BY bulan");
+        else
+            $query = $this->db->query("SELECT EXTRACT(month FROM waktu) as bulan, SUM(produksi) as produksi_bulan FROM $jenis_produk where id_tanaman = $id_tanaman AND id_kecamatan = $id_kecamatan GROUP BY bulan");
+        $res['produksi_perbulan'] = $query->result();
         echo json_encode($res);
     }
 
@@ -1105,9 +1062,9 @@ class api extends CI_Controller
         }
         $isi = $this->input->post('isi');
         $fotopath = "";
-        if($this->input->post('foto') != null){
+        if($this->input->post('foto') != ""){
             $foto = $this->input->post('foto');
-            $fotopath = "http://198.71.80.189:8081/uploads/".$foto." | "; 
+            $fotopath = "http://198.71.80.189:8081/uploads/forum/".$foto.".jpg"; 
         }
         
         $query = $this->db->query("SELECT id_user FROM users_mobile where username='$username'");
@@ -1281,6 +1238,31 @@ class api extends CI_Controller
         $username = $this->input->post('username');
         $nmfile = $username.".jpg";
         $config['upload_path'] = './uploads/profiles'; //path folder
+        $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
+        $config['file_ext'] = '.jpg';
+        $config['overwrite'] = true;
+        $config['file_name'] = $nmfile;
+        $this->upload->initialize($config);
+        if($_FILES['foto']['name'])
+        {
+            if ($this->upload->do_upload('foto'))
+            {
+                $gbr = $this->upload->data();
+                echo "berhasil";
+            }
+            else {
+                $error = $this->upload->display_errors();
+                echo "$error";
+            }
+        }
+    }
+
+    public function do_uploadfotoforum()
+    {
+        $this->load->library('upload');
+        $filename = $this->input->post('filename');
+        $nmfile = $filename.".jpg";
+        $config['upload_path'] = './uploads/forum'; //path folder
         $config['allowed_types'] = 'gif|jpg|png|jpeg|bmp';
         $config['file_ext'] = '.jpg';
         $config['overwrite'] = true;
