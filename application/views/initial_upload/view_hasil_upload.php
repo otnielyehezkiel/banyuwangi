@@ -86,23 +86,8 @@ $this->load->view('page/footer');
         display: none;
     }
 </style>
+
 <script>
-    $(document).ready(function() {
-        checkall(this);
-        $( "#waktu" ).datepicker({
-            changeMonth: true,
-            changeYear: true,
-            showButtonPanel: true,
-            dateFormat: 'MM yy',
-            yearRange: "-50:+0",
-            /*onClose: function(dateText, inst) {
-                $(this).datepicker('setDate', new Date(2014, 3, 1));
-            }*/
-        });
-        $("#waktu").datepicker('setDate', new Date(2015,11, 1));
-        $('#checkbox_check_semua').click();
-        $('#submit').click();
-    } );
     function checkall(source)
     {
         checkboxes=document.getElementsByName("row[]");
@@ -119,9 +104,9 @@ $this->load->view('page/footer');
             showButtonPanel: true,
             dateFormat: 'MM yy',
             yearRange: "-50:+0",
-            /*onClose: function(dateText, inst) {
-                $(this).datepicker('setDate', new Date(2014, 3, 1));
-            }*/
+            onClose: function(dateText, inst) {
+                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+            }
         });
     });
 </script>
