@@ -67,7 +67,7 @@ $this->load->view('page/header');
                                 ?>
                                 </tbody>
                             </table>
-                            <button type="submit" class="btn btn-success" name="submit" value="submit">Submit</button>
+                            <button id="submit" type="submit" class="btn btn-success" name="submit" value="submit">Submit</button>
                     </div>
                     </form>
                 </div>
