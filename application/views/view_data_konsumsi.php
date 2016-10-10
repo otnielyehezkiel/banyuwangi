@@ -292,7 +292,7 @@ $this->load->view('page/footer');
 
             //clear the current content of the select
             $selKecamatan.html('');
-            $selKecamatan.append('<option value="' + 25 + '">' + 'Semua Kecamatan' +'</option>');
+            $selKecamatan.append('<option value="' + 0 + '">' + 'Semua Kecamatan' +'</option>');
             //iterate over the data and append a select option
             $.each(data, function(key, val){
                 $selKecamatan.append('<option value="' + val.id_kecamatan + '">' + val.nama_kecamatan +'</option>')
