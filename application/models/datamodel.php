@@ -75,6 +75,7 @@ class datamodel extends CI_Model
             else
             {
                 $this->db->where("$table.id_kabupaten",1);
+                $this->db->where("$table.id_kecamatan",25);
                 if(!empty($sum))
                 {
                     foreach ($sum as $val)
@@ -82,8 +83,6 @@ class datamodel extends CI_Model
                         $this->db->select($val);
                     }
                 }
-
-                $this->db->group_by($table.".id_kabupaten");
                 $query=$this->db->get();
             }
         }
