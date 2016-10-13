@@ -719,8 +719,8 @@ class api extends CI_Controller
             foreach ($res['result'] as $row) {
                 $pasar['getpasar'][] = array(
                     'id' => $row['market_id'],
-                    'nama' => $row['market_name']
-                    'kab_id' => $row['kabkota_id'];
+                    'nama' => $row['market_name'],
+                    'kab_id' => $row['kabkota_id']
                 );
             }
             $result = $this->pasarmodel->insertData('pasar',$pasar['getpasar']);
