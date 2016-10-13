@@ -511,7 +511,7 @@ class api extends CI_Controller
         $this->db->join('users_mobile u', 'c.id_user = u.id_user');
         $this->db->where('c.id_post', $id_post);
         $this->db->where('c.status', 0);
-        $this->db->order_by('created_at', 'DESC');
+        $this->db->order_by('created_at', 'ASC');
         
         $query = $this->db->get();
         $rows['getcomment'] = $query->result_array();
@@ -1044,7 +1044,7 @@ class api extends CI_Controller
         $this->db->join('users_mobile u', 'c.id_user = u.id_user');
         $this->db->where('c.id_post', $id_post);
         $this->db->where('c.status', 0);
-        $this->db->order_by('created_at', 'DESC');
+        $this->db->order_by('created_at', 'ASC');
         
         $query = $this->db->get();
         $rows['getcomment'] = $query->result_array();
