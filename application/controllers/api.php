@@ -717,12 +717,11 @@ class api extends CI_Controller
         $pasar['getpasar'] = array();
         if($res['success'] == 1){
             foreach ($res['result'] as $row) {
-                if($row['kabkota_id'] == 6 || $row['kabkota_id'] == 1){ // id kabupaten banyuwangi = 6
-                    $pasar['getpasar'][] = array(
-                        'id' => $row['market_id'],
-                        'nama' => $row['market_name']
-                    );
-                }
+                $pasar['getpasar'][] = array(
+                    'id' => $row['market_id'],
+                    'nama' => $row['market_name']
+                    'kab_id' => $row['kabkota_id'];
+                );
             }
             $result = $this->pasarmodel->insertData('pasar',$pasar['getpasar']);
             if(!$result) echo "Insert Gagal!";
@@ -838,12 +837,11 @@ class api extends CI_Controller
         }
     }
 
-    public function getPasarWonokromo()
+    public function getPasarData($id_pasar)
     {
         $this->load->model('pasarmodel');
 
-        $tanggal ='2016-09-29';
-        $id_pasar = 2;
+        $tanggal = date('Y-m-d',strtotime("-3 days"));
 
         if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
             $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
@@ -1256,6 +1254,8 @@ class api extends CI_Controller
             }
         }
     }
+
+
 
     public function do_uploadfotoforum()
     {

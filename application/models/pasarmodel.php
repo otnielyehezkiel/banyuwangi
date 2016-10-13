@@ -52,7 +52,7 @@ class pasarmodel extends CI_MODEL
 		$this->db->select('*');
 		$this->db->from($table);
 		if($table == 'pasar'){
-			$this->db->where('id > 6');
+			$this->db->where('kab_id',6);
 		}
 		$query = $this->db->get();
 		return $query->result_array();
