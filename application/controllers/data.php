@@ -292,6 +292,11 @@ class data extends admin_controller
         $this->load->view('view_grafik_harga', $data);
     }
 
-    
-
+    public function loadTanaman($start, $end)
+    {
+        $data = $this->db->query(
+            "SELECT id_tanaman, nama_tanaman from jenis_tanaman where id_tanaman >= $start and id_tanaman <= $end"
+        );
+        echo json_encode($data->result_array());
+    }
 }

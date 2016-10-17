@@ -841,21 +841,39 @@ class api extends CI_Controller
     {
         $this->load->model('pasarmodel');
 
-        $tanggal = date('Y-m-d',strtotime("-3 days"));
+        $tanggal = date('Y-m-d');
+        $count = 0;
 
-        if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
-            $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
-            echo json_encode($harga);
-            return;
+        /*Cari tanggal yang tidak kosong datanya*/
+        while(true){
+
+            if($this->pasarmodel->isInserted($tanggal, $id_pasar)){
+                $harga['getharga'] = $this->pasarmodel->isInserted($tanggal, $id_pasar);
+                echo json_encode($harga);
+                return;
+            }
+
+            $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $data = curl_exec($ch);
+            $res = json_decode($data,true);
+
+            $check = array();
+            foreach($res['result'] as $row){
+                if($row['market_id'] == $id_pasar){
+                    $check = $row['details'];
+                }
+            }
+
+            if(!empty($check)){
+                break;
+            }
+
+            $count += 1;
+            $tanggal = date('Y-m-d',strtotime("-".$count." days"));
         }
-
-
-        $url = "http://siskaperbapo.com/api/?username=pihpsapi&password=xxhargapanganxx&task=getDailyPriceAllMarket&tanggal=".$tanggal;
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $data = curl_exec($ch);
-        $res = json_decode($data,true);
 
         $prev_date = date('Y-m-d', strtotime($tanggal .' -1 day'));
 

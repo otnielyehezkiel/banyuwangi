@@ -180,13 +180,13 @@ class mdata extends CI_MODEL
         return $query;
     }
 
-    public function getDataById($table,$id)
+    public function getDataById($table, $id)
     {
         $query=$this->db->query("SELECT id_bahan_makanan, jenis_tanaman, luas_panen, produktivitas, produksi, MONTHNAME(waktu) as bulan, YEAR(waktu) as tahun from $table WHERE id_bahan_makanan=$id;");
         return $query;
     }
 
-    public function updateData($table,$id)
+    public function updateData($table, $id)
     {
         $jenis_tanaman=$this->input->post('jenis_tanaman');
         $luas_panen=$this->input->post('luas_panen');
@@ -196,4 +196,5 @@ class mdata extends CI_MODEL
 
         $query=$this->db->query("UPDATE $table SET jenis_tanaman='$jenis_tanaman', luas_panen=$luas_panen, produktivitas=$produktivitas, produksi=$produksi, waktu='$waktu' WHERE id_bahan_makanan=$id");
     }
+
 }
