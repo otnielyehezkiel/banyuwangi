@@ -27,8 +27,8 @@ class excelmodel extends CI_MODEL
                 $arr_data[$row][$column] = $data_value;
             }
         }
-        $data['header']=$header;
-        $data['arr_data']=$arr_data;
+        $data['header'] = $header;
+        $data['arr_data'] = $arr_data;
         return $data;
     }
 }

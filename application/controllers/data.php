@@ -238,10 +238,6 @@ class data extends admin_controller
         $today = $this->input->post('tanggal');
         echo $pasar_id;
         echo $today;
-        /*if($this->input->post("pasar_id") && $this->input->post("tanggal") ){
-            $pasar_id = $this->input->post("pasar_id");
-            $today = date('Y-m-d',$this->input->post("tanggal"));
-        }*/
     }
 
     public function hapus($table,$id)
@@ -266,7 +262,6 @@ class data extends admin_controller
             $this->data["link"]=site_url()."/data/editdata/".$table."/".$id;
             $this->load->view('view_pertanian_edit',$this->data);
         }
-
     }
 
     public function grafikHarga()

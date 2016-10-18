@@ -23,7 +23,7 @@ $this->load->view('page/header');
                         <input type="hidden" name="namajenis" id="namajenis" value=""/>
                         <label for="Kategori"> Jenis Tanaman :</label>
                         <select name="jenisdata" class="form-control" id="jenisdata">
-                            </select> 
+                        </select> 
                     </div>
                     <div style="margin-bottom: 25px" class="input-group">
                         <div style="display:none">
@@ -56,9 +56,9 @@ $this->load->view('page/footer');
 
 
 <script>
-    var txt = 'Produksi Tanaman Bahan Makanan';
+    var txt = ["bahan_makanan", "sayur_sayuran", "buah_buahan", "tanaman_perkebunan"];
     var site_url = "<?php echo site_url()?>";
-    document.getElementById('namajenis').value = txt;
+    document.getElementById('namajenis').value = txt[0];
 
     function populateJenis(){
         var category = $( "#category option:selected" ).val();
@@ -66,7 +66,8 @@ $this->load->view('page/footer');
         var select = $( "#jenisdata" );
 
         switch(category){
-            case '1': 
+            case '1':
+            document.getElementById('namajenis').value = txt[0]; 
                 url = site_url + '/data/loadTanaman/1/8';
                 $.getJSON(url, function(data){
                     select.html('');
@@ -76,6 +77,7 @@ $this->load->view('page/footer');
                 });
                 break;
             case '2':
+                document.getElementById('namajenis').value = txt[1];
                 url = site_url + '/data/loadTanaman/17/25';
                 $.getJSON(url, function(data){
                     select.html('');
@@ -85,6 +87,7 @@ $this->load->view('page/footer');
                 });
                 break;
             case '3':
+                document.getElementById('namajenis').value = txt[2];
                 url = site_url + '/data/loadTanaman/26/34';
                 $.getJSON(url, function(data){
                     select.html('');
@@ -94,6 +97,7 @@ $this->load->view('page/footer');
                 });
                 break;
             case '4':
+                document.getElementById('namajenis').value = txt[3];
                 url = site_url + '/data/loadTanaman/9/16';
                 $.getJSON(url, function(data){
                     select.html('');

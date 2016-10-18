@@ -44,7 +44,7 @@ class Upload_excel extends admin_controller {
     
     public function hasilupload()
     {
-        $hasil=$this->proses();
+        $hasil = $this->proses();
         $this->data["title"]="Hasil Upload";
         $this->data["header"]=$hasil["header"];
         $this->data["data_val"]=$hasil["arr_data"];
@@ -55,7 +55,7 @@ class Upload_excel extends admin_controller {
 
     }
     
-    public function uploadproduksi()
+    /*public function uploadproduksi()
     {
         $hasil=$this->proses();
         $this->data["title"]="Hasil Upload";
@@ -65,5 +65,21 @@ class Upload_excel extends admin_controller {
         $this->data['jenis_data']=$this->input->post('jenisdata');
         $this->data['table']=$this->input->post('table');
         $this->load->view('initial_upload/view_hasil_upload_produksi',$this->data);
+    }*/
+    
+    public function uploadproduksi()
+    {
+        $hasil = $this->proses();
+
+        $this->load->model("excelmodel");
+        $this->load->model("mdata");
+        $filepath = $this->data["filepath"];
+        $value_data = $hasil["arr_data"];
+
+        $table = $this->input->post('namajenis');
+        $jenis_data = $this->input->post('jenisdata');
+        
+        $this->mdata->insertProduksi($table, $value_data, $jenis_data);
+        redirect(site_url().'/upload_excel/get/produksi');
     }
 }

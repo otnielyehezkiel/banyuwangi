@@ -45,43 +45,56 @@ class mdata extends CI_MODEL
         }
     }
 
-    public function insertProduksi($table, $arr_data, $arr_check, $waktu,$id_kecamatan)
+    public function insertProduksi($table, $arr_data, $id_tanaman)
     {
-        $cek = array_filter($arr_check);
+        $cek = array_filter($arr_data);
 
         if (empty($cek)) {
             return;
         }
-
-        foreach ($arr_check as $index)
+        echo $id_tanaman . " " . $table . "\n";
+        foreach ($arr_data as $val)
         {
-            $index+=1;
-            $val= $arr_data[$index];
-            $cekada=$this->db->query("SELECT * from $table WHERE id_kecamatan='$id_kecamatan' and id_tanaman='$val[2]' and waktu='$waktu'");
-
-            $val5=str_replace(',','.',$val[4]);
-            $val6=str_replace(',','.',$val[5]);
-            $val7=str_replace(',','.',$val[6]);
-            if($cekada->num_rows()==0)
+            $waktu = $val[7] . "-" . $val[6] . "-1";
+            $cekada = $this->db->query("
+                SELECT * from $table 
+                WHERE id_kecamatan='$val[1]' 
+                and id_tanaman='$id_tanaman' and waktu='$waktu'"
+            );
+            foreach ($val as &$row) {
+               $row = str_replace(',','',$row);        
+            }
+            
+            if($cekada->num_rows() == 0)
             {
-                $data=array(
-                    'id_kabupaten'=>1,
-                    'id_tanaman'=>$val[2],
-                    'id_kecamatan'=>$id_kecamatan,
-                    'luas_panen'=>$val5,
-                    'produktivitas'=>$val6,
-                    'produksi'=>$val7,
-                    'waktu'=>$waktu
+                $data = array(
+                    'id_kabupaten' => 1,
+                    'id_tanaman' => $id_tanaman,
+                    'id_kecamatan' => $val[1],
+                    'luas_panen' => $val[3],
+                    'produktivitas' => $val[4],
+                    'produksi' => $val[5],
+                    'waktu' => $waktu
                 );
 
-                $this->db->insert($table,$data);
-//                $this->db->query("INSERT INTO $table VALUES(null, $val[2], $val[3], '$val[5]', $val5, $val6, $val7, '$waktu');");
+                $query[] = $this->db->insert($table,$data);
             }
             else
             {
-                $query=$this->db->query("UPDATE bahan_makanan SET luas_panen='$val5',produktivitas=$val6,produksi='$val7' WHERE id_tanaman='$val[2]' and waktu='$waktu';");
+                $query[] = $this->db->query("
+                    UPDATE $table 
+                    SET luas_panen='$val[3]', produktivitas='$val[4]', produksi='$val[5]' 
+                    WHERE id_tanaman='$id_tanaman' and waktu='$waktu' and id_kecamatan = '$val[1]';
+                ");
             }
         }
+
+        foreach ($query as $row) {
+            if($row === false){
+                return false;
+            }
+        }
+        return true;
     }
 
     /*Insert dari data excel yang dicentang ke database*/
